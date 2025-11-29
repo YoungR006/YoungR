@@ -87,17 +87,17 @@
         const particleCount = 25000;
         const positions = [];
         const targets = {     // 存储各形状的目标位置
-            cubicHeart: [], // 立方体爱心形状
+            cubicHeart: [],
             flower: [],
-            saturn: [],
-            buddha: [], // 简化版打坐形态
-            fireworks: [] // 烟花形状
+            saturn: [], // 土星
+            buddha: [],
+            fireworks: []
         };
-        let currentShape = 'cubicHeart'; // 默认形状改为立方体爱心
+        let currentShape = 'saturn'; // <<< 调整点 1: 默认形状改为土星
         let handInteractionFactor = 0;
-        let targetColor = new THREE.Color(0xff69b4); // 默认立方体爱心颜色 (HotPink)
+        let targetColor = new THREE.Color(0xd7a560); // 默认土星颜色 (淡棕色)
         
-        let photoMesh; // 用于存储您的照片网格
+        let photoMesh;
 
         // --- 初始化 Three.js ---
         function initThree() {
@@ -121,7 +121,6 @@
             controls.autoRotate = true;
             controls.autoRotateSpeed = 1.0;
 
-            // 加载照片
             loadPhotos();
 
             // 创建粒子系统
@@ -155,18 +154,17 @@
             // 1. 创建正面网格 (Mesh)
             const frontMaterial = new THREE.MeshBasicMaterial({ 
                 map: frontTexture,
-                side: THREE.FrontSide // 只渲染正面
+                side: THREE.FrontSide
             });
             const frontMesh = new THREE.Mesh(photoGeometry, frontMaterial);
             
             // 2. 创建反面网格 (Mesh)
             const backMaterial = new THREE.MeshBasicMaterial({ 
                 map: backTexture,
-                side: THREE.FrontSide // 仍然只渲染它的正面
+                side: THREE.FrontSide
             });
             const backMesh = new THREE.Mesh(photoGeometry, backMaterial);
 
-            // 关键步骤：将反面网格绕 Y 轴旋转 180 度（π 弧度），使其背对正面网格
             backMesh.rotation.y = Math.PI;
 
             // 3. 创建一个群组 (Group)，用于同时旋转这两个网格
@@ -177,7 +175,6 @@
             photoMesh.position.set(0, 0, 0); // 放在场景中心
             scene.add(photoMesh);
             
-            // 确保 photoMesh 上的旋转速度变量被初始化
             photoMesh.rotationSpeed = 0.005;
         }
 
@@ -185,27 +182,22 @@
         // --- 粒子形状生成算法 ---
         function generateShapes() {
             const tempVec = new THREE.Vector3();
-            // 照片中心是 (0,0,0)，我们让粒子围绕它生成，稍微偏移
-            const photoOffsetX = 0; // 可以微调粒子群的中心相对于照片的位置
+            const photoOffsetX = 0;
             const photoOffsetY = 0;
             const photoOffsetZ = 0;
 
             for (let i = 0; i < particleCount; i++) {
                 // 1. 立方体爱心 (Cubic Heart)
-                // 基于普通爱心公式，但增加随机性和分层来模拟“立方体感”
                 let x, y, z, t;
-                t = Math.random() * Math.PI * 2; // 爱心曲线的参数
+                t = Math.random() * Math.PI * 2;
                 
-                // 基础爱心公式 (2D)
                 x = 16 * Math.pow(Math.sin(t), 3);
                 y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
 
-                // 添加Z轴深度和“立方体”随机偏移
-                z = (Math.random() - 0.5) * 20; // 深度
-                x += (Math.random() - 0.5) * 5; // 增加一些随机抖动，让粒子更分散
+                z = (Math.random() - 0.5) * 20;
+                x += (Math.random() - 0.5) * 5;
                 y += (Math.random() - 0.5) * 5;
 
-                // 调整整体大小和位置
                 const scale = 1.2;
                 targets.cubicHeart.push(x * scale + photoOffsetX, y * scale + photoOffsetY, z + photoOffsetZ);
 
@@ -269,14 +261,11 @@
             geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
             const textureLoader = new THREE.TextureLoader();
-            // 使用一个明确的圆形点贴图，确保粒子是圆形
             const circleSprite = textureLoader.load('https://threejs.org/examples/textures/sprites/disc.png'); 
-            // 默认的 spark1.png 也是圆形，但 disc.png 更典型地用于此。
-            // 如果希望粒子是方形，可以改为使用其他贴图或不设置map
 
             material = new THREE.PointsMaterial({
                 size: 1.5,
-                map: circleSprite, // 默认使用圆形粒子
+                map: circleSprite,
                 vertexColors: true,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false,
@@ -290,10 +279,11 @@
 
         // --- GUI 设置 ---
         function initGUI() {
-            const gui = new GUI({ container: document.getElementById('ui-container') });
+            // <<< 调整点 2: 添加 { closed: true } 使 GUI 默认闭合
+            const gui = new GUI({ container: document.getElementById('ui-container'), closed: true }); 
             const params = {
-                shape: 'cubicHeart', // 默认形状改为立方体爱心
-                color: '#ff69b4',    // 默认立方体爱心颜色 (HotPink)
+                shape: 'saturn', // <<< 调整点 3: 默认形状为土星
+                color: '#d7a560',    // 默认土星颜色
                 particleSize: 1.5,
                 photoRotationSpeed: 0.005,
                 resetCamera: () => controls.reset()
@@ -309,14 +299,14 @@
                 event.stopPropagation();
             }, false);
 
-            gui.add(params, 'shape', ['cubicHeart', 'flower', 'saturn', 'buddha', 'fireworks']).name('模型选择').onChange(val => {
+            gui.add(params, 'shape', ['saturn', 'cubicHeart', 'flower', 'buddha', 'fireworks']).name('模型选择').onChange(val => {
                 currentShape = val;
                 // 切换颜色主题
+                if(val === 'saturn') params.color = '#d7a560';
                 if(val === 'cubicHeart') params.color = '#ff69b4';
-                if(val === 'saturn') params.color = '#dda0dd';
                 if(val === 'flower') params.color = '#ffcc00';
                 if(val === 'buddha') params.color = '#00ffff';
-                if(val === 'fireworks') params.color = '#ffffff'; // 烟花通常是白色或彩色
+                if(val === 'fireworks') params.color = '#ffffff';
                 targetColor.set(params.color);
             });
 
