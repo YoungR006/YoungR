@@ -8,16 +8,13 @@
         body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Segoe UI', sans-serif; }
         canvas { display: block; }
         
-        /* UI 面板样式 */
         #ui-container {
             position: absolute;
             top: 20px;
             left: 20px;
-            pointer-events: none; /* 让点击穿透到 Canvas */
             z-index: 10;
         }
         
-        /* 摄像头预览 (默认隐藏或缩小) */
         .input_video {
             position: absolute;
             bottom: 10px;
@@ -26,12 +23,11 @@
             height: 120px;
             border-radius: 8px;
             border: 2px solid rgba(255,255,255,0.3);
-            transform: scaleX(-1); /* 镜像 */
+            transform: scaleX(-1);
             opacity: 0.7;
             z-index: 5;
         }
 
-        /* 全屏按钮 */
         #fullscreen-btn {
             position: absolute;
             bottom: 20px;
@@ -48,7 +44,6 @@
         }
         #fullscreen-btn:hover { background: rgba(255, 255, 255, 0.3); }
 
-        /* 加载提示 */
         #loading {
             position: absolute;
             top: 50%; left: 50%;
@@ -90,18 +85,20 @@
         let scene, camera, renderer, particles, geometry, material;
         let controls;
         const particleCount = 25000;
-        const positions = []; // 存储当前位置
+        const positions = [];
         const targets = {     // 存储各形状的目标位置
-            heart: [],
+            lotus: [],      // 莲花形状
             flower: [],
             saturn: [],
             buddha: [], // 简化版打坐形态
             fireworks: []
         };
-        let currentShape = 'heart';
-        let handInteractionFactor = 0; // 0 = 无手势, 1 = 最大张开
-        let targetColor = new THREE.Color(0xff0055);
+        let currentShape = 'lotus';
+        let handInteractionFactor = 0;
+        let targetColor = new THREE.Color(0x9400D3);
         
+        let photoMesh; // 用于存储您的照片网格
+
         // --- 初始化 Three.js ---
         function initThree() {
             const container = document.createElement('div');
@@ -124,15 +121,16 @@
             controls.autoRotate = true;
             controls.autoRotateSpeed = 1.0;
 
+            // 加载照片
+            loadPhotos();
+
             // 创建粒子系统
             generateShapes();
             createParticles();
             initGUI();
             
-            // 窗口调整
             window.addEventListener('resize', onWindowResize);
             
-            // 全屏按钮
             document.getElementById('fullscreen-btn').addEventListener('click', () => {
                 if (!document.fullscreenElement) {
                     document.documentElement.requestFullscreen();
@@ -144,72 +142,118 @@
             animate();
         }
 
+        // --- 加载并添加照片 ---
+        function loadPhotos() {
+            const textureLoader = new THREE.TextureLoader();
+            
+            // =========================================================================
+            // 【请替换为您的图片路径！】
+            // 如果图片在根目录，直接写文件名即可。
+            // 部署在 Vercel 上后，这些路径会相对于 Vercel 部署的根目录。
+            const frontTexture = textureLoader.load('https://raw.githubusercontent.com/Anirudh073/magic-particles/main/front_photo.jpg'); // 替换为你的正面图片路径
+            const backTexture = textureLoader.load('https://raw.githubusercontent.com/Anirudh073/magic-particles/main/back_photo.jpg');   // 替换为你的反面图片路径
+            // =========================================================================
+
+            const photoGeometry = new THREE.PlaneGeometry(30, 30); // 照片大小，可以调整
+
+            // 创建双面材质
+            const frontMaterial = new THREE.MeshBasicMaterial({ map: frontTexture, side: THREE.FrontSide, transparent: true });
+            const backMaterial = new THREE.MeshBasicMaterial({ map: backTexture, side: THREE.BackSide, transparent: true });
+
+            photoMesh = new THREE.Mesh(photoGeometry, [frontMaterial, backMaterial]);
+            photoMesh.position.set(0, 0, 0); // 放在场景中心
+            scene.add(photoMesh);
+
+            // 让照片一开始就可见且不透明
+            frontMaterial.opacity = 1;
+            backMaterial.opacity = 1;
+        }
+
+
         // --- 粒子形状生成算法 ---
         function generateShapes() {
             const tempVec = new THREE.Vector3();
+            // 照片中心是 (0,0,0)，我们让粒子围绕它生成，稍微偏移
+            const photoOffsetX = 0; // 可以微调粒子群的中心相对于照片的位置
+            const photoOffsetY = 0;
+            const photoOffsetZ = 0;
 
             for (let i = 0; i < particleCount; i++) {
-                // 1. 爱心 (Heart)
-                let x, y, z, t, r;
-                // 使用 parametric equations
-                t = Math.random() * Math.PI * 2;
-                r = Math.random() * Math.PI * 2;
-                // 复杂的3D爱心公式
-                x = 16 * Math.pow(Math.sin(t), 3);
-                y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
-                z = r * 2; // 厚度
-                // 随机分布在体积内
-                const scale = 1.5;
-                targets.heart.push((x * scale) + (Math.random()-0.5)*2, (y * scale) + (Math.random()-0.5)*2, (Math.random()-0.5) * 10);
+                // 1. 莲花 (Lotus)
+                const petalCount = 6;
+                const layerCount = 3;
+                const baseRadius = 25; // 粒子群离照片的半径，可以调整
+                const centerOffset = -10;
 
-                // 2. 土星 (Saturn)
-                // 70% 粒子在球体，30% 在光环
+                const petalIndex = Math.floor(Math.random() * petalCount);
+                const layerIndex = Math.floor(Math.random() * layerCount);
+
+                const angleOffset = (petalIndex / petalCount) * Math.PI * 2;
+                const layerScale = 1 - (layerIndex / layerCount) * 0.2;
+
+                const u = Math.random() * Math.PI * 2;
+                const v = Math.random() * Math.PI;
+
+                let x = baseRadius * Math.sin(v) * Math.cos(u) * layerScale;
+                let y = baseRadius * Math.cos(v) * 0.8 * layerScale;
+                let z = baseRadius * Math.sin(v) * Math.sin(u) * layerScale;
+
+                let radius = Math.sqrt(x*x + z*z);
+                let currentAngle = Math.atan2(z, x);
+                
+                const petalFactor = Math.cos(currentAngle * petalCount / 2);
+                radius *= (1 + 0.3 * petalFactor * Math.sin(v));
+
+                x = radius * Math.cos(currentAngle + angleOffset);
+                z = radius * Math.sin(currentAngle + angleOffset);
+                y = y * (1 + 0.5 * Math.abs(Math.sin(v - Math.PI/2)));
+
+                // 加上照片中心偏移量
+                targets.lotus.push(x + photoOffsetX, y + centerOffset + photoOffsetY, z + photoOffsetZ);
+
+
+                // 2. 花朵 (Flower / Rose Curve)
+                const f_theta = Math.random() * Math.PI * 2;
+                const f_phi = Math.random() * Math.PI;
+                const k = 3; 
+                const radius_f = 30 * Math.sin(k * f_theta) * Math.sin(f_phi) + 10;
+                tempVec.setFromSphericalCoords(radius_f, f_phi, f_theta);
+                targets.flower.push(tempVec.x + photoOffsetX, tempVec.y + photoOffsetY, tempVec.z + photoOffsetZ);
+
+                // 3. 土星 (Saturn)
                 if (i < particleCount * 0.6) {
                     const phi = Math.acos(-1 + (2 * i) / (particleCount * 0.6));
                     const theta = Math.sqrt((particleCount * 0.6) * Math.PI) * phi;
                     const r = 25;
                     tempVec.setFromSphericalCoords(r, phi, theta);
-                    targets.saturn.push(tempVec.x, tempVec.y, tempVec.z);
+                    targets.saturn.push(tempVec.x + photoOffsetX, tempVec.y + photoOffsetY, tempVec.z + photoOffsetZ);
                 } else {
                     const angle = Math.random() * Math.PI * 2;
                     const dist = 35 + Math.random() * 20;
-                    targets.saturn.push(Math.cos(angle) * dist, (Math.random()-0.5)*2, Math.sin(angle) * dist);
+                    targets.saturn.push(Math.cos(angle) * dist + photoOffsetX, (Math.random()-0.5)*2 + photoOffsetY, Math.sin(angle) * dist + photoOffsetZ);
                 }
 
-                // 3. 花朵 (Flower / Rose Curve)
-                const f_theta = Math.random() * Math.PI * 2;
-                const f_phi = Math.random() * Math.PI;
-                // 玫瑰线变体 r = cos(k*theta)
-                const k = 3; 
-                const radius = 30 * Math.sin(k * f_theta) * Math.sin(f_phi) + 10;
-                tempVec.setFromSphericalCoords(radius, f_phi, f_theta);
-                targets.flower.push(tempVec.x, tempVec.y, tempVec.z);
-
                 // 4. 佛像意象 (Buddha Silhouette - Simplified)
-                // 这是一个程序化生成的打坐人形轮廓，而非加载模型
-                // 头部
                 if (i < particleCount * 0.15) {
                     const r = 8;
                     tempVec.randomDirection().multiplyScalar(r).add(new THREE.Vector3(0, 18, 0));
-                    targets.buddha.push(tempVec.x, tempVec.y, tempVec.z);
+                    targets.buddha.push(tempVec.x + photoOffsetX, tempVec.y + photoOffsetY, tempVec.z + photoOffsetZ);
                 } 
-                // 身体
                 else if (i < particleCount * 0.5) {
-                    const r = 12; // 躯干
+                    const r = 12;
                     const h = Math.random() * 20;
                     const angle = Math.random() * Math.PI * 2;
-                    targets.buddha.push(Math.cos(angle)*r * (1 - h/30), h - 5, Math.sin(angle)*r * (1 - h/30));
+                    targets.buddha.push(Math.cos(angle)*r * (1 - h/30) + photoOffsetX, h - 5 + photoOffsetY, Math.sin(angle)*r * (1 - h/30) + photoOffsetZ);
                 }
-                // 腿部 (盘腿)
                 else {
                     const angle = Math.random() * Math.PI * 2;
                     const r = 15 + Math.random() * 10;
-                    targets.buddha.push(Math.cos(angle)*r, -8 + Math.random()*5, Math.sin(angle)*r * 0.8);
+                    targets.buddha.push(Math.cos(angle)*r + photoOffsetX, -8 + Math.random()*5 + photoOffsetY, Math.sin(angle)*r * 0.8 + photoOffsetZ);
                 }
 
                 // 5. 烟花 (Fireworks - Random explosion)
                 tempVec.randomDirection().multiplyScalar(50 + Math.random() * 100);
-                targets.fireworks.push(tempVec.x, tempVec.y, tempVec.z);
+                targets.fireworks.push(tempVec.x + photoOffsetX, tempVec.y + photoOffsetY, tempVec.z + photoOffsetZ);
             }
         }
 
@@ -218,7 +262,6 @@
             const initialPositions = new Float32Array(particleCount * 3);
             const colors = new Float32Array(particleCount * 3);
 
-            // 初始全部在原点或随机位置
             for (let i = 0; i < particleCount * 3; i++) {
                 initialPositions[i] = (Math.random() - 0.5) * 100;
                 colors[i] = 1.0; 
@@ -227,9 +270,7 @@
             geometry.setAttribute('position', new THREE.BufferAttribute(initialPositions, 3));
             geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-            // 材质
             const textureLoader = new THREE.TextureLoader();
-            // 使用简单的光点贴图
             const sprite = textureLoader.load('https://threejs.org/examples/textures/sprites/spark1.png');
 
             material = new THREE.PointsMaterial({
@@ -250,16 +291,26 @@
         function initGUI() {
             const gui = new GUI({ container: document.getElementById('ui-container') });
             const params = {
-                shape: 'heart',
-                color: '#ff0055',
+                shape: 'lotus',
+                color: '#9400D3',
                 particleSize: 1.5,
+                photoRotationSpeed: 0.005, // 新增照片旋转速度
                 resetCamera: () => controls.reset()
             };
+            
+            const guiDomElement = gui.domElement;
 
-            gui.add(params, 'shape', ['heart', 'flower', 'saturn', 'buddha', 'fireworks']).name('模型选择').onChange(val => {
+            guiDomElement.addEventListener('mousedown', (event) => {
+                event.stopPropagation();
+            }, false);
+            
+            guiDomElement.addEventListener('pointerdown', (event) => {
+                event.stopPropagation();
+            }, false);
+
+            gui.add(params, 'shape', ['lotus', 'flower', 'saturn', 'buddha', 'fireworks']).name('模型选择').onChange(val => {
                 currentShape = val;
-                // 切换颜色主题
-                if(val === 'heart') params.color = '#ff0055';
+                if(val === 'lotus') params.color = '#9400D3';
                 if(val === 'saturn') params.color = '#dda0dd';
                 if(val === 'flower') params.color = '#ffcc00';
                 if(val === 'buddha') params.color = '#00ffff';
@@ -275,6 +326,15 @@
                 material.size = val;
             });
 
+            // 新增照片旋转速度控制
+            gui.add(params, 'photoRotationSpeed', 0, 0.05).name('照片旋转速度').onChange(val => {
+                photoMesh.rotationSpeed = val; // 将速度存储在 mesh 对象上
+            });
+            // 初始化 photoMesh 的旋转速度
+            if (photoMesh) {
+                photoMesh.rotationSpeed = params.photoRotationSpeed;
+            }
+
             gui.add(params, 'resetCamera').name('重置视角');
         }
 
@@ -288,14 +348,8 @@
             const targetArr = targets[currentShape];
             const colors = particles.geometry.attributes.color.array;
 
-            // 粒子变形与手势交互逻辑
-            // handInteractionFactor 来自 MediaPipe (0 到 1)
-            // 当手张开时，粒子扩散/放大；闭合时，粒子聚拢
-            
-            // 基础扩散系数 (Base spread)
-            let spreadMult = 1.0 + (handInteractionFactor * 1.5); // 手势控制缩放 1x -> 2.5x
+            let spreadMult = 1.0 + (handInteractionFactor * 1.5);
 
-            // 如果是烟花模式，增加额外的爆炸动画
             const isFireworks = currentShape === 'fireworks';
             const speed = isFireworks ? 0.02 : 0.05;
 
@@ -304,22 +358,18 @@
                 const iy = i * 3 + 1;
                 const iz = i * 3 + 2;
 
-                // 目标位置
                 let tx = targetArr[ix] * spreadMult;
                 let ty = targetArr[iy] * spreadMult;
                 let tz = targetArr[iz] * spreadMult;
 
-                // 简单的线性插值 (Lerp) 实现 Morphing
                 positions[ix] += (tx - positions[ix]) * speed;
                 positions[iy] += (ty - positions[iy]) * speed;
                 positions[iz] += (tz - positions[iz]) * speed;
 
-                // 颜色实时渐变
                 colors[ix] += (targetColor.r - colors[ix]) * 0.05;
                 colors[iy] += (targetColor.g - colors[iy]) * 0.05;
                 colors[iz] += (targetColor.b - colors[iz]) * 0.05;
 
-                // 添加一些噪点/抖动，使粒子看起来更有活力
                 if(handInteractionFactor > 0.5) {
                     positions[ix] += (Math.random()-0.5) * 0.5;
                     positions[iy] += (Math.random()-0.5) * 0.5;
@@ -329,6 +379,11 @@
 
             particles.geometry.attributes.position.needsUpdate = true;
             particles.geometry.attributes.color.needsUpdate = true;
+
+            // 照片旋转
+            if (photoMesh) {
+                photoMesh.rotation.y += photoMesh.rotationSpeed || 0.005; // 围绕Y轴旋转
+            }
 
             renderer.render(scene, camera);
         }
@@ -348,27 +403,20 @@
             if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
                 const landmarks = results.multiHandLandmarks[0];
                 
-                // 获取拇指指尖(4) 和 食指指尖(8)
                 const thumb = landmarks[4];
                 const index = landmarks[8];
 
-                // 计算简单的欧几里得距离
-                // 坐标是 0.0 - 1.0 的归一化坐标
                 const distance = Math.sqrt(
                     Math.pow(thumb.x - index.x, 2) + 
                     Math.pow(thumb.y - index.y, 2)
                 );
 
-                // 映射距离到 0-1 之间
-                // 通常捏合距离约为 0.02，张开约为 0.2
                 let factor = (distance - 0.02) * 6; 
-                factor = Math.max(0, Math.min(1, factor)); // Clamp 0-1
+                factor = Math.max(0, Math.min(1, factor));
 
-                // 平滑过渡
                 handInteractionFactor += (factor - handInteractionFactor) * 0.1;
                 
             } else {
-                // 如果没有手，慢慢恢复到 0
                 handInteractionFactor += (0 - handInteractionFactor) * 0.05;
             }
         }
@@ -394,9 +442,7 @@
             height: 240
         });
 
-        // 启动 Three.js
         initThree();
-        // 启动摄像头
         cameraUtils.start();
 
     </script>
