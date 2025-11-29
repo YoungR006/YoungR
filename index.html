@@ -87,15 +87,15 @@
         const particleCount = 25000;
         const positions = [];
         const targets = {     // 存储各形状的目标位置
-            lotus: [],      // 莲花形状
+            cubicHeart: [], // 立方体爱心形状
             flower: [],
             saturn: [],
             buddha: [], // 简化版打坐形态
-            fireworks: []
+            fireworks: [] // 烟花形状
         };
-        let currentShape = 'lotus';
+        let currentShape = 'cubicHeart'; // 默认形状改为立方体爱心
         let handInteractionFactor = 0;
-        let targetColor = new THREE.Color(0x9400D3);
+        let targetColor = new THREE.Color(0xff69b4); // 默认立方体爱心颜色 (HotPink)
         
         let photoMesh; // 用于存储您的照片网格
 
@@ -143,44 +143,43 @@
         }
 
         // --- 加载并添加照片 ---
-        // --- 加载并添加照片 ---
-function loadPhotos() {
-    const textureLoader = new THREE.TextureLoader();
-    
-    // 加载图片
-    const frontTexture = textureLoader.load('1.jpg'); 
-    const backTexture = textureLoader.load('2.jpg');
+        function loadPhotos() {
+            const textureLoader = new THREE.TextureLoader();
+            
+            // 加载图片
+            const frontTexture = textureLoader.load('1.jpg'); 
+            const backTexture = textureLoader.load('2.jpg');
 
-    const photoGeometry = new THREE.PlaneGeometry(30, 30); // 照片大小
+            const photoGeometry = new THREE.PlaneGeometry(30, 30); // 照片大小
 
-    // 1. 创建正面网格 (Mesh)
-    const frontMaterial = new THREE.MeshBasicMaterial({ 
-        map: frontTexture,
-        side: THREE.FrontSide // 只渲染正面
-    });
-    const frontMesh = new THREE.Mesh(photoGeometry, frontMaterial);
-    
-    // 2. 创建反面网格 (Mesh)
-    const backMaterial = new THREE.MeshBasicMaterial({ 
-        map: backTexture,
-        side: THREE.FrontSide // 仍然只渲染它的正面
-    });
-    const backMesh = new THREE.Mesh(photoGeometry, backMaterial);
+            // 1. 创建正面网格 (Mesh)
+            const frontMaterial = new THREE.MeshBasicMaterial({ 
+                map: frontTexture,
+                side: THREE.FrontSide // 只渲染正面
+            });
+            const frontMesh = new THREE.Mesh(photoGeometry, frontMaterial);
+            
+            // 2. 创建反面网格 (Mesh)
+            const backMaterial = new THREE.MeshBasicMaterial({ 
+                map: backTexture,
+                side: THREE.FrontSide // 仍然只渲染它的正面
+            });
+            const backMesh = new THREE.Mesh(photoGeometry, backMaterial);
 
-    // 关键步骤：将反面网格绕 Y 轴旋转 180 度（π 弧度），使其背对正面网格
-    backMesh.rotation.y = Math.PI;
+            // 关键步骤：将反面网格绕 Y 轴旋转 180 度（π 弧度），使其背对正面网格
+            backMesh.rotation.y = Math.PI;
 
-    // 3. 创建一个群组 (Group)，用于同时旋转这两个网格
-    photoMesh = new THREE.Group();
-    photoMesh.add(frontMesh);
-    photoMesh.add(backMesh);
-    
-    photoMesh.position.set(0, 0, 0); // 放在场景中心
-    scene.add(photoMesh);
-    
-    // 确保 photoMesh 上的旋转速度变量被初始化
-    photoMesh.rotationSpeed = 0.005;
-}
+            // 3. 创建一个群组 (Group)，用于同时旋转这两个网格
+            photoMesh = new THREE.Group();
+            photoMesh.add(frontMesh);
+            photoMesh.add(backMesh);
+            
+            photoMesh.position.set(0, 0, 0); // 放在场景中心
+            scene.add(photoMesh);
+            
+            // 确保 photoMesh 上的旋转速度变量被初始化
+            photoMesh.rotationSpeed = 0.005;
+        }
 
 
         // --- 粒子形状生成算法 ---
@@ -192,37 +191,23 @@ function loadPhotos() {
             const photoOffsetZ = 0;
 
             for (let i = 0; i < particleCount; i++) {
-                // 1. 莲花 (Lotus)
-                const petalCount = 6;
-                const layerCount = 3;
-                const baseRadius = 25; // 粒子群离照片的半径，可以调整
-                const centerOffset = -10;
-
-                const petalIndex = Math.floor(Math.random() * petalCount);
-                const layerIndex = Math.floor(Math.random() * layerCount);
-
-                const angleOffset = (petalIndex / petalCount) * Math.PI * 2;
-                const layerScale = 1 - (layerIndex / layerCount) * 0.2;
-
-                const u = Math.random() * Math.PI * 2;
-                const v = Math.random() * Math.PI;
-
-                let x = baseRadius * Math.sin(v) * Math.cos(u) * layerScale;
-                let y = baseRadius * Math.cos(v) * 0.8 * layerScale;
-                let z = baseRadius * Math.sin(v) * Math.sin(u) * layerScale;
-
-                let radius = Math.sqrt(x*x + z*z);
-                let currentAngle = Math.atan2(z, x);
+                // 1. 立方体爱心 (Cubic Heart)
+                // 基于普通爱心公式，但增加随机性和分层来模拟“立方体感”
+                let x, y, z, t;
+                t = Math.random() * Math.PI * 2; // 爱心曲线的参数
                 
-                const petalFactor = Math.cos(currentAngle * petalCount / 2);
-                radius *= (1 + 0.3 * petalFactor * Math.sin(v));
+                // 基础爱心公式 (2D)
+                x = 16 * Math.pow(Math.sin(t), 3);
+                y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
 
-                x = radius * Math.cos(currentAngle + angleOffset);
-                z = radius * Math.sin(currentAngle + angleOffset);
-                y = y * (1 + 0.5 * Math.abs(Math.sin(v - Math.PI/2)));
+                // 添加Z轴深度和“立方体”随机偏移
+                z = (Math.random() - 0.5) * 20; // 深度
+                x += (Math.random() - 0.5) * 5; // 增加一些随机抖动，让粒子更分散
+                y += (Math.random() - 0.5) * 5;
 
-                // 加上照片中心偏移量
-                targets.lotus.push(x + photoOffsetX, y + centerOffset + photoOffsetY, z + photoOffsetZ);
+                // 调整整体大小和位置
+                const scale = 1.2;
+                targets.cubicHeart.push(x * scale + photoOffsetX, y * scale + photoOffsetY, z + photoOffsetZ);
 
 
                 // 2. 花朵 (Flower / Rose Curve)
@@ -284,11 +269,14 @@ function loadPhotos() {
             geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
             const textureLoader = new THREE.TextureLoader();
-            const sprite = textureLoader.load('https://threejs.org/examples/textures/sprites/spark1.png');
+            // 使用一个明确的圆形点贴图，确保粒子是圆形
+            const circleSprite = textureLoader.load('https://threejs.org/examples/textures/sprites/disc.png'); 
+            // 默认的 spark1.png 也是圆形，但 disc.png 更典型地用于此。
+            // 如果希望粒子是方形，可以改为使用其他贴图或不设置map
 
             material = new THREE.PointsMaterial({
                 size: 1.5,
-                map: sprite,
+                map: circleSprite, // 默认使用圆形粒子
                 vertexColors: true,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false,
@@ -304,10 +292,10 @@ function loadPhotos() {
         function initGUI() {
             const gui = new GUI({ container: document.getElementById('ui-container') });
             const params = {
-                shape: 'lotus',
-                color: '#9400D3',
+                shape: 'cubicHeart', // 默认形状改为立方体爱心
+                color: '#ff69b4',    // 默认立方体爱心颜色 (HotPink)
                 particleSize: 1.5,
-                photoRotationSpeed: 0.005, // 新增照片旋转速度
+                photoRotationSpeed: 0.005,
                 resetCamera: () => controls.reset()
             };
             
@@ -321,13 +309,14 @@ function loadPhotos() {
                 event.stopPropagation();
             }, false);
 
-            gui.add(params, 'shape', ['lotus', 'flower', 'saturn', 'buddha', 'fireworks']).name('模型选择').onChange(val => {
+            gui.add(params, 'shape', ['cubicHeart', 'flower', 'saturn', 'buddha', 'fireworks']).name('模型选择').onChange(val => {
                 currentShape = val;
-                if(val === 'lotus') params.color = '#9400D3';
+                // 切换颜色主题
+                if(val === 'cubicHeart') params.color = '#ff69b4';
                 if(val === 'saturn') params.color = '#dda0dd';
                 if(val === 'flower') params.color = '#ffcc00';
                 if(val === 'buddha') params.color = '#00ffff';
-                if(val === 'fireworks') params.color = '#ffffff';
+                if(val === 'fireworks') params.color = '#ffffff'; // 烟花通常是白色或彩色
                 targetColor.set(params.color);
             });
 
@@ -339,12 +328,10 @@ function loadPhotos() {
                 material.size = val;
             });
 
-            // 新增照片旋转速度控制
-            gui.add(params, 'photoRotationSpeed', 0, 0.05).name('照片旋转速度').onChange(val => {
-                photoMesh.rotationSpeed = val; // 将速度存储在 mesh 对象上
-            });
-            // 初始化 photoMesh 的旋转速度
             if (photoMesh) {
+                gui.add(params, 'photoRotationSpeed', 0, 0.05).name('照片旋转速度').onChange(val => {
+                    photoMesh.rotationSpeed = val;
+                });
                 photoMesh.rotationSpeed = params.photoRotationSpeed;
             }
 
@@ -395,7 +382,7 @@ function loadPhotos() {
 
             // 照片旋转
             if (photoMesh) {
-                photoMesh.rotation.y += photoMesh.rotationSpeed || 0.005; // 围绕Y轴旋转
+                photoMesh.rotation.y += photoMesh.rotationSpeed || 0.005;
             }
 
             renderer.render(scene, camera);
@@ -461,5 +448,3 @@ function loadPhotos() {
     </script>
 </body>
 </html>
-
-
