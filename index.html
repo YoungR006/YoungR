@@ -1,240 +1,681 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8"> 
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>王多鱼 - 大学生创业贷款平台</title>
-    <link rel="stylesheet" href="common.css">
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>王多鱼梦想创业资助贷款平台 - 完整功能</title>
+    <!-- 引入 Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* 头部样式 */
-        .header {
-            padding: 16px 0;
-            border-bottom: 1px solid #f3f4f6;
-            background-color: #fff;
-            position: sticky;
-            top: 0;
-            z-index: 999;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&display=swap');
+        body {
+            font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: #f7f9fb;
         }
-        .logo {
-            font-size: 22px;
-            font-weight: 600;
-            color: #2563eb;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        /* 隐藏功能块的默认样式 */
+        .page-content { display: none; }
+        .is-active { display: block; }
+
+        /* 统一卡片样式 */
+        .card {
+            @apply bg-white p-6 md:p-10 rounded-xl shadow-lg border border-gray-100;
         }
-        .nav {
-            display: flex;
-            gap: 32px;
+
+        /* 旋转加载动画 */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
-        .nav a {
-            color: #374151;
-            font-weight: 500;
-        }
-        .nav a:hover {
-            color: #2563eb;
-        }
-        /* Banner样式 */
-        .banner {
-            padding: 80px 0;
-            text-align: center;
-        }
-        .banner h1 {
-            font-size: 40px;
-            font-weight: 600;
-            color: #1f2937;
-            margin-bottom: 16px;
-        }
-        .banner p {
-            font-size: 18px;
-            color: #6b7280;
-            max-width: 600px;
-            margin: 0 auto 32px;
-        }
-        /* 优势样式 */
-        .advantage {
-            padding: 60px 0;
-            background-color: #fff;
-        }
-        .advantage-list {
-            display: flex;
-            gap: 48px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .advantage-item {
-            max-width: 280px;
-            text-align: center;
-        }
-        .advantage-item i {
-            font-size: 36px;
-            color: #2563eb;
-            margin-bottom: 16px;
-        }
-        .advantage-item h3 {
-            font-size: 18px;
-            font-weight: 500;
-            margin-bottom: 8px;
-            color: #1f2937;
-        }
-        .advantage-item p {
-            color: #6b7280;
-        }
-        /* 流程样式 */
-        .process {
-            padding: 60px 0;
-        }
-        .process-list {
-            display: flex;
-            justify-content: space-between;
-            position: relative;
-            margin-top: 40px;
-        }
-        .process-list::before {
-            content: '';
-            position: absolute;
-            top: 30px;
-            left: 60px;
-            right: 60px;
-            height: 1px;
-            background-color: #e5e7eb;
-        }
-        .process-item {
-            text-align: center;
-            position: relative;
-            width: 20%;
-        }
-        .process-item .icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-color: #eff6ff;
-            color: #2563eb;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 12px;
-            font-size: 24px;
-        }
-        .process-item p {
-            font-weight: 500;
-            color: #1f2937;
-        }
-        /* 底部样式 */
-        .footer {
-            padding: 40px 0;
-            border-top: 1px solid #f3f4f6;
-            margin-top: 60px;
-        }
-        .footer-links {
-            display: flex;
-            gap: 24px;
-            margin-bottom: 16px;
-        }
-        .copyright {
-            color: #6b7280;
-            font-size: 14px;
+        .animate-spin-custom {
+            animation: spin 1s linear infinite;
         }
     </style>
 </head>
-<body>
-    <!-- 头部 -->
-    <header class="header">
-        <div class="container flex justify-between items-center">
-            <div class="logo">
-                <<i class="fas fa-lightbulb"></</i>
-                <span>王多鱼创业贷款</span>
-            </div>
-            <nav class="nav">
-                <a href="index.html">首页</a>
-                <a href="advantage.html">平台优势</a>
-                <a href="policy.html">政策解读</a>
-                <a href="help.html">帮助中心</a>
+<body class="text-gray-800">
+
+    <!-- 导航栏 (Header) -->
+    <header class="sticky top-0 z-20 bg-white shadow-md">
+        <div class="max-w-7xl mx-auto flex justify-between items-center py-4 px-4 sm:px-6 lg:px-8">
+            <h1 class="text-2xl font-bold text-blue-600 tracking-tight cursor-pointer" onclick="navigate('home')">
+                梦想助贷 <span class="text-sm font-light text-gray-500">Loan.AI</span>
+            </h1>
+            
+            <!-- 桌面端导航 -->
+            <nav class="hidden sm:flex space-x-6">
+                <button class="nav-link text-gray-600 hover:text-blue-600 font-medium" onclick="navigate('home')">首页</button>
+                <button id="loan-center-nav-btn" class="nav-link text-gray-600 hover:text-blue-600 font-medium" onclick="navigate('apply-form')" style="display:none;">借贷中心</button>
+                <button id="dashboard-nav-btn" class="nav-link text-gray-600 hover:text-blue-600 font-medium" onclick="navigate('dashboard')" style="display:none;">我的仪表板</button>
+                <button id="login-nav-btn" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg shadow-lg transition duration-300" onclick="navigate('login')">登录 / 注册</button>
+                <button id="logout-btn" class="text-red-500 hover:text-red-700 py-2 px-4 rounded-lg transition duration-300" onclick="logout()" style="display:none;">退出</button>
             </nav>
-            <div class="auth-buttons flex gap-4">
-                <button class="btn-outline" onclick="location.href='login.html'">登录</button>
-                <button class="btn-primary" onclick="location.href='register.html'">注册申请</button>
-            </div>
+            
+            <!-- 移动端菜单按钮 -->
+            <button class="sm:hidden text-gray-600 hover:text-blue-600" onclick="toggleMobileMenu()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+            </button>
         </div>
     </header>
 
-    <!-- Banner -->
-    <section class="banner">
-        <div class="container">
-            <h1>助力大学生创业，资金无忧</h1>
-            <p>政府贴息 · AI智能审批 · 3分钟授信 · 0纸质材料 · T+0到账</p>
-            <button class="btn-primary" onclick="location.href='register.html'">立即申请贷款</button>
+    <!-- 移动端菜单 (Hidden by default) -->
+    <div id="mobile-menu" class="sm:hidden fixed inset-0 z-10 bg-white p-6 transition duration-300 transform -translate-x-full">
+        <div class="flex justify-end">
+            <button class="text-gray-600 hover:text-blue-600" onclick="toggleMobileMenu()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
         </div>
-    </section>
+        <nav class="mt-8 space-y-4 text-center">
+            <button class="block text-2xl text-gray-600 hover:text-blue-600 font-medium w-full py-2" onclick="navigate('home'); toggleMobileMenu();">首页</button>
+            <button id="mobile-loan-center-btn" class="block text-2xl text-gray-600 hover:text-blue-600 font-medium w-full py-2" onclick="navigate('apply-form'); toggleMobileMenu();" style="display:none;">借贷中心</button>
+            <button id="mobile-dashboard-btn" class="block text-2xl text-gray-600 hover:text-blue-600 font-medium w-full py-2" onclick="navigate('dashboard'); toggleMobileMenu();" style="display:none;">我的仪表板</button>
+            <button id="mobile-login-btn" class="block text-2xl bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition w-full" onclick="navigate('login'); toggleMobileMenu();">登录 / 注册</button>
+            <button id="mobile-logout-btn" class="block text-2xl text-red-500 hover:text-red-700 py-2 px-4 rounded-lg transition w-full" onclick="logout(); toggleMobileMenu();" style="display:none;">退出</button>
+        </nav>
+    </div>
 
-    <!-- 核心优势 -->
-    <section class="advantage">
-        <div class="container">
-            <h2 class="title text-center">平台核心优势</h2>
-            <div class="advantage-list">
-                <div class="advantage-item">
-                    <<i class="fas fa-brain"></</i>
-                    <h3>AI智能评估</h3>
-                    <p>5秒生成风险评分，精准匹配贴息政策</p>
-                </div>
-                <div class="advantage-item">
-                    <<i class="fas fa-hand-holding-usd"></</i>
-                    <h3>政府贴息支持</h3>
-                    <p>最低0利率，减轻创业资金压力</p>
-                </div>
-                <div class="advantage-item">
-                    <<i class="fas fa-paper-plane"></</i>
-                    <h3>全程线上办理</h3>
-                    <p>无需纸质材料，省时省力高效便捷</p>
-                </div>
-                <div class="advantage-item">
-                    <<i class="fas fa-bolt"></</i>
-                    <h3>极速放款到账</h3>
-                    <p>审核通过后T+0到账，不耽误创业时机</p>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- 主内容区 -->
+    <main class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
 
-    <!-- 申请流程 -->
-    <section class="process">
-        <div class="container">
-            <h2 class="title text-center">简单4步，轻松获贷</h2>
-            <div class="process-list">
-                <div class="process-item">
-                    <div class="icon"><<i class="fas fa-user-plus"></</i></div>
-                    <p>注册认证</p>
-                </div>
-                <div class="process-item">
-                    <div class="icon"><<i class="fas fa-file-upload"></</i></div>
-                    <p>提交项目</p>
-                </div>
-                <div class="process-item">
-                    <div class="icon"><<i class="fas fa-check-circle"></</i></div>
-                    <p>AI审核</p>
-                </div>
-                <div class="process-item">
-                    <div class="icon"><<i class="fas fa-money-bill-wave"></</i></div>
-                    <p>放款到账</p>
+        <!-- 1. 首页 (Home) - 延续初始的英雄区和介绍 -->
+        <section id="home" class="page-content is-active">
+            <!-- 英雄区 -->
+            <div class="py-10 md:py-20 text-center">
+                <h2 class="text-4xl sm:text-6xl font-extrabold leading-tight mb-6 text-gray-900">王多鱼梦想创业资助贷款平台</h2>
+                <p class="text-xl sm:text-2xl text-gray-500 mb-10 font-light">大学生创业融资的智能高速通道，用科技点燃你的创业梦想。</p>
+                <button class="inline-block bg-blue-600 hover:bg-blue-700 text-white text-xl font-semibold py-4 px-12 rounded-xl shadow-2xl shadow-blue-400 transition transform hover:scale-[1.02] duration-300 ease-out" onclick="navigate('apply-form')">
+                    立即前往借贷中心 &rarr;
+                </button>
+                <p class="mt-4 text-sm text-gray-400">“3分钟授信、0纸质材料、政策资金T+0到账”</p>
+            </div>
+            
+            <!-- 核心价值 (保留三列布局) -->
+            <div class="py-16 md:py-24 bg-white rounded-xl shadow-xl">
+                <h3 class="text-3xl font-bold text-center mb-16 text-gray-800">我们的核心价值</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 px-6">
+                    <div class="text-center p-6 rounded-xl bg-gray-50 border-t-4 border-blue-500">
+                        <div class="mx-auto w-16 h-16 flex items-center justify-center bg-blue-100 rounded-full mb-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
+                        <h4 class="text-2xl font-semibold text-gray-900 mb-2">3分钟智能授信</h4>
+                        <p class="text-gray-500">AI分析快速评估项目风险。</p>
+                    </div>
+                    <div class="text-center p-6 rounded-xl bg-gray-50 border-t-4 border-blue-500">
+                        <div class="mx-auto w-16 h-16 flex items-center justify-center bg-blue-100 rounded-full mb-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg></div>
+                        <h4 class="text-2xl font-semibold text-gray-900 mb-2">全程0纸质材料</h4>
+                        <p class="text-gray-500">资料线上提交，电子合同认证。</p>
+                    </div>
+                    <div class="text-center p-6 rounded-xl bg-gray-50 border-t-4 border-blue-500">
+                        <div class="mx-auto w-16 h-16 flex items-center justify-center bg-blue-100 rounded-full mb-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" /></svg></div>
+                        <h4 class="text-2xl font-semibold text-gray-900 mb-2">政策资金T+0到账</h4>
+                        <p class="text-gray-500">银行接口对接，资金极速到账。</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- 底部 -->
-    <footer class="footer">
-        <div class="container flex flex-col">
-            <div class="footer-links">
-                <a href="policy.html">政策支持</a>
-                <a href="help.html">帮助中心</a>
-                <a href="contact.html">联系我们</a>
-                <a href="#">隐私政策</a>
+        <!-- 2. 注册/登录模块 (Login/Register) -->
+        <section id="login" class="page-content py-10">
+            <div class="max-w-md mx-auto card">
+                <h3 class="text-3xl font-bold text-center mb-8 text-blue-600">用户认证与登录</h3>
+                
+                <!-- 登录表单 -->
+                <form id="login-form">
+                    <div class="mb-4">
+                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">手机号</label>
+                        <input type="text" id="phone" name="phone" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="请输入手机号" required>
+                    </div>
+                    <div class="mb-6">
+                        <label for="id_card" class="block text-sm font-medium text-gray-700 mb-1">身份证号</label>
+                        <input type="text" id="id_card" name="id_card" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="请输入身份证号" required>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-300">
+                        登录 / 完成实名认证
+                    </button>
+                </form>
+
+                <p id="auth-status-message" class="mt-4 text-center text-sm text-gray-500">
+                    <span class="text-green-500">认证说明:</span> 平台需通过手机号、身份证号进行校验，并模拟人脸识别，确保身份真实有效。
+                </p>
             </div>
-            <div class="copyright">
-                © 2025 王多鱼创业贷款平台 | 本网站为演示版本，无实际资金交易功能
+        </section>
+
+        <!-- 3. 借贷中心/贷款申请模块 (Application Form) -->
+        <section id="apply-form" class="page-content py-10">
+             <div class="max-w-2xl mx-auto card">
+                <h3 class="text-3xl font-bold text-center mb-8 text-blue-600">借贷中心 - 贷款申请</h3>
+                <p class="text-center text-gray-500 mb-6">请上传您的创业项目资料（PPT/PDF/视频），由 AI 智能分析模块进行评估。</p>
+
+                <form id="loan-form">
+                    <div class="mb-4">
+                        <label for="project-title" class="block text-sm font-medium text-gray-700 mb-1">项目标题 (Title)</label>
+                        <input type="text" id="project-title" name="project-title" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="您的创业项目名称，不超过50字" maxlength="50" required>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="project-file" class="block text-sm font-medium text-gray-700 mb-1">项目文件 (File Upload)</label>
+                        <input type="file" id="project-file" name="project-file" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" accept=".pdf,.ppt,.pptx,.mp4" required>
+                        <p class="text-xs text-gray-500 mt-1">支持：视频/PPT/PDF等格式，用于AI智能分析。文件大小需小于 20MB。</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label for="loan-amount" class="block text-sm font-medium text-gray-700 mb-1">贷款金额 (Amount)</label>
+                            <input type="number" id="loan-amount" name="loan-amount" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" min="1000" max="1400000" placeholder="最高140万" required>
+                        </div>
+                        <div>
+                            <label for="loan-term" class="block text-sm font-medium text-gray-700 mb-1">贷款期限 (Term)</label>
+                            <select id="loan-term" name="loan-term" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 appearance-none" required>
+                                <option value="" disabled selected>选择期限</option>
+                                <option value="6">6个月</option>
+                                <option value="12">12个月</option>
+                                <option value="24">24个月</option>
+                                <option value="36">36个月</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-lg shadow-md transition duration-300">
+                        提交申请 &rarr; 启动 AI 智能分析
+                    </button>
+                </form>
             </div>
+        </section>
+
+        <!-- 4. AI智能分析结果页面 (AI Analysis/Lending) -->
+        <section id="ai-result" class="page-content py-10">
+            <div class="max-w-3xl mx-auto card">
+                <h3 class="text-3xl font-bold text-center mb-8 text-red-600">AI智能分析报告</h3>
+                <p class="text-center text-gray-500 mb-6">AI系统已完成对您项目的风险评估、信用模型校验及政府贴息匹配。</p>
+                
+                <div id="ai-loading" class="text-center py-10" style="display:none;">
+                    <div class="spinner-border animate-spin-custom inline-block w-12 h-12 border-4 rounded-full border-red-500 border-r-transparent" role="status"></div>
+                    <p class="mt-4 text-xl font-medium text-red-500">AI 分析中... 请耐心等待</p>
+                    <p class="text-sm text-gray-500">正在进行项目关键词提取、风险评分与贴息试算 (3分钟内完成)</p>
+                </div>
+
+                <div id="analysis-content" style="display:none;">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <!-- 核心风险评分 -->
+                        <div class="p-4 bg-green-50 rounded-lg text-center shadow-sm">
+                            <p class="text-sm text-green-700 font-medium">AI 风险评分 (Risk Score)</p>
+                            <p id="risk-score" class="text-4xl font-extrabold text-green-600 mt-1">0.25</p>
+                            <p class="text-xs text-green-500">评分越低，风险越低 (合格线: 0.50)</p>
+                        </div>
+                        <!-- 匹配贴息金额 -->
+                        <div class="p-4 bg-yellow-50 rounded-lg text-center shadow-sm">
+                            <p class="text-sm text-yellow-700 font-medium">政府贴息匹配</p>
+                            <p id="subsidy-amount" class="text-4xl font-extrabold text-yellow-600 mt-1">¥ 5,000</p>
+                            <p class="text-xs text-yellow-500">已自动匹配地方创业政策</p>
+                        </div>
+                        <!-- 推荐授信额度 -->
+                        <div class="p-4 bg-blue-50 rounded-lg text-center shadow-sm">
+                            <p class="text-sm text-blue-700 font-medium">最终放款额度</p>
+                            <p id="lending-amount" class="text-4xl font-extrabold text-blue-600 mt-1">¥ 100,000</p>
+                            <p class="text-xs text-blue-500">T+0 极速到账金额</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-6 p-6 border border-gray-300 rounded-lg bg-white shadow-inner">
+                        <p class="text-xl font-semibold text-gray-800 mb-3 border-b pb-2">合同与关键词详情</p>
+                        <p class="text-gray-600 mb-2"><span class="font-medium text-blue-600">项目标题:</span> <span id="project-title-display"></span></p>
+                        <p class="text-gray-600 mb-2"><span class="font-medium text-blue-600">AI 提取关键词:</span> <span id="keywords">科技创新, 校园服务, 低成本运营</span></p>
+                        <p class="text-gray-600"><span class="font-medium text-blue-600">合同编号:</span> <span id="contract-id">CT202409001</span></p>
+                        
+                        <div class="mt-6 flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+                            <button class="flex-grow bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 rounded-lg transition duration-300">
+                                下载/签署电子合同 (CA 证书)
+                            </button>
+                            <button id="lending-btn" class="flex-grow bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg transition duration-300" onclick="simulateLending()">
+                                确认合同 & 立即申请放款 (T+0)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <p id="ai-error-message" class="mt-4 text-center text-red-500" style="display:none;">AI分析失败，请检查项目文件格式或联系客服。</p>
+            </div>
+        </section>
+
+        <!-- 5. 我的仪表板 / 还款管理模块 (Dashboard/Repayment) -->
+        <section id="dashboard" class="page-content py-10">
+             <div class="max-w-5xl mx-auto card">
+                <h3 class="text-3xl font-bold text-center mb-8 text-blue-600">我的创业金融仪表板</h3>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 text-center">
+                    <div class="p-4 bg-blue-50 rounded-lg">
+                        <p class="text-sm text-gray-500">待还本金</p>
+                        <p id="dashboard-principal" class="text-2xl font-bold text-blue-800">¥ 80,000.00</p>
+                    </div>
+                    <div class="p-4 bg-yellow-50 rounded-lg">
+                        <p class="text-sm text-gray-500">下期还款日</p>
+                        <p id="dashboard-next-due" class="text-2xl font-bold text-yellow-800">2025/12/30</p>
+                    </div>
+                    <div class="p-4 bg-green-50 rounded-lg">
+                        <p class="text-sm text-gray-500">累计贴息</p>
+                        <p id="dashboard-subsidy" class="text-2xl font-bold text-green-800">¥ 10,000.00</p>
+                    </div>
+                    <div class="p-4 bg-red-50 rounded-lg">
+                        <p class="text-sm text-gray-500">合同状态</p>
+                        <!-- 关键：这里会动态更新为“还款中”或“已结清” -->
+                        <p id="dashboard-status" class="text-2xl font-bold text-red-800">还款中</p>
+                    </div>
+                </div>
+
+                <h4 class="text-xl font-semibold mb-4 text-gray-700">还款计划与操作</h4>
+                
+                <!-- 还款计划表格 -->
+                <div class="overflow-x-auto mb-6 border rounded-lg">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">期数</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">应还日期</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">应还总额 (含息)</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">状态</th>
+                            </tr>
+                        </thead>
+                        <tbody id="repayment-schedule" class="bg-white divide-y divide-gray-200">
+                            <!-- 模拟数据行 -->
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">1/12</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025/11/30</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">¥ 8,888.88</td>
+                                <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">已还清</span></td>
+                            </tr>
+                            <tr class="hover:bg-gray-50" id="current-repayment-row">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">2/12</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025/12/30</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">¥ 8,888.88</td>
+                                <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">待还款</span></td>
+                            </tr>
+                            <!-- 更多数据... -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 还款/提前结清操作区 -->
+                <div class="mt-8 pt-6 border-t border-gray-200">
+                    <h4 class="text-xl font-semibold mb-4 text-gray-700">还款操作</h4>
+                    <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+                        <button id="pay-current-btn" class="flex-grow bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg transition duration-300" onclick="simulateRepayment('current')">
+                            立即支付当期还款 (¥ 8,888.88)
+                        </button>
+                        <button id="pay-full-btn" class="flex-grow bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-lg transition duration-300" onclick="simulateRepayment('full')">
+                            提前结清所有贷款
+                        </button>
+                    </div>
+                </div>
+                <!-- 结清证明下载区域 -->
+                <div id="settlement-proof" class="mt-8 pt-4 border-t border-green-300 bg-green-50 p-4 rounded-lg hidden">
+                     <p class="text-lg font-semibold text-green-700">🎉 贷款已全部结清！</p>
+                     <p class="text-sm text-green-600 mt-1">感谢您的良好信用，请下载您的结清证明文件。</p>
+                     <button class="mt-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300">
+                         下载结清证明 (PDF)
+                     </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <!-- 模态框 (Custom Alert/Success Message) -->
+    <div id="modal-container" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div id="custom-modal" class="bg-white rounded-xl shadow-2xl p-8 max-w-sm w-full transform transition-all duration-300 scale-95">
+            <h4 id="modal-title" class="text-2xl font-bold text-blue-600 mb-4">提示</h4>
+            <p id="modal-message" class="text-gray-700 mb-6">操作成功！</p>
+            <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-300" onclick="closeModal()">
+                确认
+            </button>
         </div>
-    </footer>
+    </div>
+
+    <script>
+        // 应用程序状态管理
+        let appState = {
+            isLoggedIn: false,
+            currentView: 'home',
+            userId: null,
+            latestApplication: null,
+            isSettled: false, // 新增：跟踪是否已结清
+        };
+
+        // --- 视图切换逻辑 ---
+        function navigate(viewId) {
+            // 确保只有登录用户才能访问借贷中心和仪表板
+            if ((viewId === 'apply-form' || viewId === 'dashboard' || viewId === 'ai-result') && !appState.isLoggedIn) {
+                viewId = 'login';
+                showModal('提示', '请先登录或完成实名认证才能继续操作。', 'blue');
+            }
+            
+            appState.currentView = viewId;
+            const contentSections = document.querySelectorAll('.page-content');
+            
+            contentSections.forEach(section => {
+                section.classList.remove('is-active');
+                if (section.id === viewId) {
+                    section.classList.add('is-active');
+                }
+            });
+            // 滚动到顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // 如果导航到仪表板，更新仪表板UI状态
+            if (viewId === 'dashboard') {
+                updateDashboardUI();
+            }
+        }
+
+        function updateAuthUI() {
+            const loginBtn = document.getElementById('login-nav-btn');
+            const logoutBtn = document.getElementById('logout-btn');
+            const dashboardBtn = document.getElementById('dashboard-nav-btn');
+            const loanCenterBtn = document.getElementById('loan-center-nav-btn');
+            
+            const mobileLoginBtn = document.getElementById('mobile-login-btn');
+            const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
+            const mobileDashboardBtn = document.getElementById('mobile-dashboard-btn');
+            const mobileLoanCenterBtn = document.getElementById('mobile-loan-center-btn');
+
+
+            if (appState.isLoggedIn) {
+                loginBtn.style.display = 'none';
+                logoutBtn.style.display = 'block';
+                dashboardBtn.style.display = 'block';
+                loanCenterBtn.style.display = 'block';
+
+                mobileLoginBtn.style.display = 'none';
+                mobileLogoutBtn.style.display = 'block';
+                mobileDashboardBtn.style.display = 'block';
+                mobileLoanCenterBtn.style.display = 'block';
+
+            } else {
+                loginBtn.style.display = 'block';
+                logoutBtn.style.display = 'none';
+                dashboardBtn.style.display = 'none';
+                loanCenterBtn.style.display = 'none';
+
+                mobileLoginBtn.style.display = 'block';
+                mobileLogoutBtn.style.display = 'none';
+                mobileDashboardBtn.style.display = 'none';
+                mobileLoanCenterBtn.style.display = 'none';
+            }
+        }
+        
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('-translate-x-full');
+        }
+
+        // --- 模态框逻辑 (替代 Alert/Confirm) ---
+        function showModal(title, message, color = 'blue') {
+            const modalContainer = document.getElementById('modal-container');
+            const modalTitle = document.getElementById('modal-title');
+            const modal = document.getElementById('custom-modal');
+
+            // Reset color classes
+            modalTitle.className = `text-2xl font-bold mb-4`;
+            
+            if (color === 'red') modalTitle.classList.add('text-red-600');
+            else if (color === 'green') modalTitle.classList.add('text-green-600');
+            else modalTitle.classList.add('text-blue-600');
+
+            document.getElementById('modal-message').innerText = message;
+            modalTitle.innerText = title;
+            modalContainer.classList.remove('hidden');
+            
+            // Apply scale-100 for entrance effect
+            setTimeout(() => modal.classList.add('scale-100'), 50);
+            modal.classList.remove('scale-95');
+        }
+
+        function closeModal() {
+            const modalContainer = document.getElementById('modal-container');
+            const modal = document.getElementById('custom-modal');
+            
+            // Apply scale-95 for exit effect
+            modal.classList.add('scale-95');
+            modal.classList.remove('scale-100');
+            
+            setTimeout(() => modalContainer.classList.add('hidden'), 300);
+        }
+
+        // --- 仪表板 UI 状态更新 ---
+        function updateDashboardUI() {
+            const principalElement = document.getElementById('dashboard-principal');
+            const statusElement = document.getElementById('dashboard-status');
+            const repaymentSchedule = document.getElementById('repayment-schedule');
+            const payCurrentBtn = document.getElementById('pay-current-btn');
+            const payFullBtn = document.getElementById('pay-full-btn');
+            const settlementProof = document.getElementById('settlement-proof');
+
+            if (appState.isSettled) {
+                // 已结清状态
+                principalElement.innerText = '¥ 0.00';
+                statusElement.innerText = '已结清';
+                statusElement.classList.remove('text-red-800');
+                statusElement.classList.add('text-green-800');
+                repaymentSchedule.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-gray-500">恭喜您，贷款已全部结清，无待还款项。</td></tr>`;
+                payCurrentBtn.disabled = true;
+                payFullBtn.disabled = true;
+                payCurrentBtn.classList.add('opacity-50');
+                payFullBtn.classList.add('opacity-50');
+                settlementProof.classList.remove('hidden');
+            } else {
+                // 默认/还款中状态 (基于模拟初始数据)
+                principalElement.innerText = '¥ 80,000.00';
+                statusElement.innerText = '还款中';
+                statusElement.classList.remove('text-green-800');
+                statusElement.classList.add('text-red-800');
+                // 确保至少有模拟的待还款行 (这里为了简洁，不完全重建表格)
+                if (repaymentSchedule.children.length === 0) {
+                     repaymentSchedule.innerHTML = `
+                         <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">1/12</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025/11/30</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">¥ 8,888.88</td>
+                            <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">已还清</span></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50" id="current-repayment-row">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">2/12</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025/12/30</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">¥ 8,888.88</td>
+                            <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">待还款</span></td>
+                        </tr>
+                     `;
+                }
+                payCurrentBtn.disabled = false;
+                payFullBtn.disabled = false;
+                payCurrentBtn.classList.remove('opacity-50');
+                payFullBtn.classList.remove('opacity-50');
+                settlementProof.classList.add('hidden');
+            }
+        }
+        
+        // --- 模块功能模拟 ---
+        
+        // 1. 登录/注册模拟
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 模拟身份校验和人脸识别
+            const phone = document.getElementById('phone').value;
+            const idCard = document.getElementById('id_card').value;
+            
+            if (phone.length === 11 && idCard.length === 18) {
+                appState.isLoggedIn = true;
+                appState.userId = phone; // 使用手机号作为模拟UserID
+                updateAuthUI();
+                navigate('apply-form'); // 登录成功后跳转到借贷中心
+                showModal('认证成功', '恭喜您，身份认证和人脸识别已通过！您现在可以申请贷款或管理还款。', 'green');
+            } else {
+                showModal('认证失败', '手机号或身份证号格式不正确，请重新输入。', 'red');
+            }
+        });
+
+        function logout() {
+            appState.isLoggedIn = false;
+            appState.userId = null;
+            appState.latestApplication = null;
+            appState.isSettled = false; // 退出时重置状态
+            updateAuthUI();
+            navigate('home');
+            showModal('退出成功', '您已安全退出平台。', 'blue');
+        }
+        
+        // 2. 贷款申请模拟
+        document.getElementById('loan-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('project-title').value;
+            const amount = document.getElementById('loan-amount').value;
+            const term = document.getElementById('loan-term').value;
+
+            // 重置结清状态，因为提交了新申请
+            appState.isSettled = false; 
+
+            // 模拟提交到AI分析模块
+            navigate('ai-result');
+            document.getElementById('ai-loading').style.display = 'block';
+            document.getElementById('analysis-content').style.display = 'none';
+            document.getElementById('ai-error-message').style.display = 'none';
+
+            // 模拟 AI 分析的延时
+            setTimeout(() => {
+                document.getElementById('ai-loading').style.display = 'none';
+                
+                // 模拟 AI 分析结果 (随机生成)
+                const riskScore = (Math.random() * 0.4).toFixed(2); // 0.00 - 0.40
+                const subsidyRate = Math.min(0.1, Math.random() * 0.05 + 0.01); // 1% - 5% 贴息率
+                const finalAmount = parseFloat(amount); // 模拟批准的额度与申请额度一致
+                const subsidy = Math.round(finalAmount * subsidyRate);
+                const contractId = 'CT' + Date.now().toString().slice(-8);
+
+                appState.latestApplication = {
+                    title: title,
+                    amount: finalAmount,
+                    term: parseInt(term),
+                    riskScore: riskScore,
+                    subsidy: subsidy,
+                    contractId: contractId
+                };
+
+                // 更新 AI 结果展示
+                document.getElementById('project-title-display').innerText = title;
+                document.getElementById('risk-score').innerText = riskScore;
+                document.getElementById('subsidy-amount').innerText = `¥ ${subsidy.toLocaleString()}.00`;
+                document.getElementById('contract-id').innerText = contractId;
+                document.getElementById('lending-amount').innerText = `¥ ${finalAmount.toLocaleString()}.00`;
+                
+                // 模拟关键词
+                let keywords = ['金融信息系统', '课程设计'];
+                if (title.includes('科技')) keywords.push('科技创新');
+                else if (title.includes('服务')) keywords.push('校园服务');
+                else keywords.push('大众创业');
+                document.getElementById('keywords').innerText = [...new Set(keywords)].join(', ');
+
+                document.getElementById('analysis-content').style.display = 'block';
+                showModal('AI分析完成', '您的项目已通过AI智能分析，请查看报告并签署电子合同。', 'green');
+
+            }, 3000); // 模拟 3 秒的 AI 分析时间
+        });
+        
+        // 3. 平台放款模拟
+        function simulateLending() {
+            if (!appState.latestApplication) {
+                showModal('错误', '请先完成贷款申请和 AI 分析。', 'red');
+                return;
+            }
+
+            // 模拟放款操作和银行接口对接
+            const contractId = appState.latestApplication.contractId;
+            showModal('放款处理中', `合同 ${contractId} 签署确认，平台正在对接银行接口进行 T+0 放款...`, 'blue');
+
+            setTimeout(() => {
+                // 模拟放款成功
+                const bankRef = 'FLOW' + Date.now().toString().slice(-6);
+                showModal('放款成功！', `银行流水号：${bankRef}。贷款金额已成功打入您的绑定账户。`, 'green');
+                
+                // 自动跳转到仪表板并更新状态
+                navigate('dashboard'); 
+            }, 2500); // 模拟 2.5 秒的放款时间
+        }
+
+        // 4. 还款管理模拟
+        function simulateRepayment(type) {
+            let amount = 8888.88; // 模拟当期还款金额
+            let message = '';
+            
+            if (type === 'full') {
+                if (appState.isSettled) {
+                    showModal('提示', '您的贷款已全部结清，无需再次操作。', 'blue');
+                    return;
+                }
+                amount = 80000.00; // 模拟剩余本金
+                message = `您已发起提前结清申请 (¥ ${amount.toLocaleString()})。系统正在计算最终金额...`;
+            } else {
+                message = `您已发起当期还款 (¥ ${amount.toLocaleString()})。正在调用支付接口...`;
+            }
+
+            showModal('还款处理中', message, 'blue');
+
+            setTimeout(() => {
+                 if (type === 'full') {
+                    // 模拟提前结清成功
+                    appState.isSettled = true;
+                    // 更新 UI
+                    updateDashboardUI(); 
+                    showModal('提前结清成功', '恭喜！您的贷款已全部结清，结清证明(PDF)已生成，请在仪表板下载。', 'green');
+                } else {
+                    // 模拟更新还款记录 (只有在未结清状态下才更新分期)
+                    if (appState.isSettled) return;
+
+                    const repaymentSchedule = document.getElementById('repayment-schedule');
+                    const currentRow = document.getElementById('current-repayment-row');
+                    
+                    // 1. 标记当前期为已还清
+                    if(currentRow) {
+                       const currentPeriodText = currentRow.querySelector('td:first-child').innerText;
+                       const currentPeriod = parseInt(currentPeriodText.split('/')[0]);
+                       const totalTerms = parseInt(currentPeriodText.split('/')[1]);
+
+                       currentRow.querySelector('td:last-child').innerHTML = '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">已还清</span>';
+                       currentRow.id = ''; // 移除ID，防止后续操作影响
+
+                       // 2. 检查是否是最后一期
+                       if (currentPeriod === totalTerms) {
+                           appState.isSettled = true;
+                           updateDashboardUI();
+                           showModal('还款成功', '恭喜您，这是您的最后一期还款，贷款已全部结清！', 'green');
+                           return;
+                       }
+                       
+                       // 3. 模拟下一期待还款
+                       const nextPeriod = currentPeriod + 1;
+                       const nextDueDate = new Date(Date.now() + nextPeriod * 30 * 24 * 60 * 60 * 1000).toLocaleDateString('zh-CN');
+                       const newRow = `
+                           <tr class="hover:bg-gray-50" id="current-repayment-row">
+                               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${nextPeriod}/${totalTerms}</td>
+                               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${nextDueDate}</td>
+                               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">¥ 8,888.88</td>
+                               <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">待还款</span></td>
+                           </tr>
+                       `;
+                       repaymentSchedule.insertAdjacentHTML('beforeend', newRow);
+                       document.getElementById('dashboard-principal').innerText = `¥ ${(80000 - nextPeriod * 888.88).toFixed(2)}`;
+                       document.getElementById('dashboard-next-due').innerText = nextDueDate;
+
+                       showModal('还款成功', '当期还款成功，请继续关注下期还款日。', 'green');
+                    } else {
+                        showModal('提示', '当前无待还款项。', 'blue');
+                    }
+                }
+            }, 2000); // 模拟 2 秒的还款处理时间
+        }
+
+        // 初始化
+        window.onload = function() {
+            updateAuthUI();
+            navigate('home'); // 默认显示首页
+        }
+
+    </script>
 </body>
 </html>
+
