@@ -87,6 +87,18 @@
             opacity: 1;
             transform: translateY(0);
         }
+#edgeone-watermark {
+    display: none !important; 
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+    opacity: 0 !important;
+    overflow: hidden !important;
+}
+
+#edgeone-watermark-close {
+    display: none !important;
+}
     </style>
 </head>
 <body class="bg-brand-50 text-gray-800 antialiased overflow-x-hidden">
@@ -149,7 +161,7 @@
                 </div>
             </div>
         </div>
-
+   
         <!-- Mobile Menu Panel -->
         <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100">
             <div class="px-4 pt-2 pb-6 space-y-1">
