@@ -87,6 +87,74 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* Decorative Cube */
+        .cube-scene {
+            position: absolute;
+            right: 3rem;
+            top: 50%;
+            width: 240px;
+            height: 240px;
+            transform: translateY(-50%);
+            perspective: 900px;
+            pointer-events: none;
+        }
+        .cube-scene .container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            transform-style: preserve-3d;
+            animation: cube-rotate 18s ease-in-out infinite;
+        }
+        .cube-scene .cube {
+            position: relative;
+            width: 100%;
+            height: 70px;
+            transform-style: preserve-3d;
+            transform: rotateX(60deg) rotateZ(45deg);
+        }
+        .cube-scene .cube > div {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 60px;
+            height: 60px;
+            transform-style: preserve-3d;
+            transform: translate3d(calc(var(--x) * 70px), calc(var(--y) * 70px), 0) translate(-50%, -50%);
+        }
+        .cube-scene .cube > div span {
+            position: absolute;
+            inset: 0;
+            border-radius: 8px;
+            background: linear-gradient(135deg, rgba(0, 174, 239, 0.85), rgba(236, 0, 140, 0.85));
+            border: 1px solid rgba(35, 24, 21, 0.2);
+            transform: translateZ(calc(var(--i) * 10px));
+            box-shadow: 0 12px 20px rgba(35, 24, 21, 0.18);
+        }
+        .cube-scene .cube:nth-child(2) > div span {
+            background: linear-gradient(135deg, rgba(236, 0, 140, 0.85), rgba(255, 242, 0, 0.85));
+        }
+        .cube-scene .cube:nth-child(3) > div span {
+            background: linear-gradient(135deg, rgba(0, 174, 239, 0.85), rgba(255, 242, 0, 0.85));
+        }
+        @keyframes cube-rotate {
+            0% {
+                transform: rotateX(8deg) rotateZ(-4deg);
+            }
+            50% {
+                transform: rotateX(8deg) rotateZ(6deg);
+            }
+            100% {
+                transform: rotateX(8deg) rotateZ(-4deg);
+            }
+        }
+        @media (max-width: 1024px) {
+            .cube-scene {
+                display: none;
+            }
+        }
 #edgeone-watermark {
     display: none !important; 
     visibility: hidden !important;
@@ -245,6 +313,62 @@
                     </div>
                 </div>
 
+            </div>
+        </div>
+
+        <div class="cube-scene" aria-hidden="true">
+            <div class="container">
+                <div class="cube">
+                    <div style="--x:-1; --y:0;">
+                        <span style="--i:3;"></span>
+                        <span style="--i:2;"></span>
+                        <span style="--i:1;"></span>
+                    </div>
+                    <div style="--x:0; --y:0;">
+                        <span style="--i:3;"></span>
+                        <span style="--i:2;"></span>
+                        <span style="--i:1;"></span>
+                    </div>
+                    <div style="--x:1; --y:0;">
+                        <span style="--i:3;"></span>
+                        <span style="--i:2;"></span>
+                        <span style="--i:1;"></span>
+                    </div>
+                </div>
+                <div class="cube">
+                    <div style="--x:-1; --y:0;">
+                        <span style="--i:3;"></span>
+                        <span style="--i:2;"></span>
+                        <span style="--i:1;"></span>
+                    </div>
+                    <div style="--x:0; --y:0;">
+                        <span style="--i:3;"></span>
+                        <span style="--i:2;"></span>
+                        <span style="--i:1;"></span>
+                    </div>
+                    <div style="--x:1; --y:0;">
+                        <span style="--i:3;"></span>
+                        <span style="--i:2;"></span>
+                        <span style="--i:1;"></span>
+                    </div>
+                </div>
+                <div class="cube">
+                    <div style="--x:-1; --y:0;">
+                        <span style="--i:3;"></span>
+                        <span style="--i:2;"></span>
+                        <span style="--i:1;"></span>
+                    </div>
+                    <div style="--x:0; --y:0;">
+                        <span style="--i:3;"></span>
+                        <span style="--i:2;"></span>
+                        <span style="--i:1;"></span>
+                    </div>
+                    <div style="--x:1; --y:0;">
+                        <span style="--i:3;"></span>
+                        <span style="--i:2;"></span>
+                        <span style="--i:1;"></span>
+                    </div>
+                </div>
             </div>
         </div>
 
