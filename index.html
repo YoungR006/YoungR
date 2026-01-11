@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>长沙城至印刷有限公司 | 专注吊牌、标签与不干胶定制</title>
-    <meta name="description" content="长沙城至印刷专业提供巨型吊牌、不干胶标签、热敏纸及各类品牌物料定制服务。创新吊牌设计助力降低退货率。">
+    <title>长沙诚至印刷有限公司 | 专注吊牌、标签与不干胶定制</title>
+    <meta name="description" content="长沙诚至印刷专业提供巨型吊牌、不干胶标签、热敏纸及各类品牌物料定制服务。创新吊牌设计助力降低退货率。">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts: Noto Sans SC for Chinese -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
      
-    <!-- FontAwesome for Icons -->
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script>
@@ -35,6 +35,9 @@
                     },
                     backgroundImage: {
                         'halftone': 'radial-gradient(circle, #e5e7eb 1px, transparent 1px)',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                     }
                 }
             }
@@ -42,156 +45,307 @@
     </script>
 
     <style>
-        /* Custom Styles for Printing Elements */
-        body {
-            font-family: 'Noto Sans SC', sans-serif;
-        }
-        
-        /* Halftone Pattern Background */
-        .bg-dots {
-            background-size: 20px 20px;
-            background-image: radial-gradient(circle, #e5e7eb 1.5px, transparent 1.5px);
-        }
-
-        /* CMYK Color Bar Decoration */
-        .cmyk-bar {
-            display: flex;
-            height: 4px;
-            width: 100%;
-        }
+        body { font-family: 'Noto Sans SC', sans-serif; }
+        .bg-dots { background-size: 20px 20px; background-image: radial-gradient(circle, #e5e7eb 1.5px, transparent 1.5px); }
+        .cmyk-bar { display: flex; height: 4px; width: 100%; }
         .cmyk-c { background-color: #00AEEF; flex: 1; }
         .cmyk-m { background-color: #EC008C; flex: 1; }
         .cmyk-y { background-color: #FFF200; flex: 1; }
         .cmyk-k { background-color: #231815; flex: 1; }
 
-        /* Crop Marks (Registration Marks) */
-        .crop-mark {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            border: 1px solid #9ca3af;
-            pointer-events: none;
-        }
+        /* Crop Marks */
+        .crop-mark { position: absolute; width: 20px; height: 20px; border: 1px solid #9ca3af; pointer-events: none; }
         .crop-tl { top: 0; left: 0; border-right: none; border-bottom: none; }
         .crop-tr { top: 0; right: 0; border-left: none; border-bottom: none; }
         .crop-bl { bottom: 0; left: 0; border-right: none; border-top: none; }
         .crop-br { bottom: 0; right: 0; border-left: none; border-top: none; }
 
-        /* Fade Up Animation */
-        .fade-up {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-        }
-        .fade-up.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-#edgeone-watermark {
-    display: none !important; 
-    visibility: hidden !important;
-    height: 0 !important;
-    width: 0 !important;
-    opacity: 0 !important;
-    overflow: hidden !important;
-}
+        .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
 
-#edgeone-watermark-close {
-    display: none !important;
-}
+        /* --- 修复后的魔方样式 (Magic Cube Fixed) --- */
+        @keyframes cube-animate {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .magic-cube-wrapper {
+            position: absolute;
+            z-index: 20; /* 提高层级确保不被遮挡 */
+            pointer-events: none; /* 让鼠标点击能穿透到背景，除非点到魔方本身 */
+        }
+        
+        /* 移动端样式：缩小并放在右下侧，确保可见 */
+        @media (max-width: 1023px) {
+            .magic-cube-wrapper {
+                top: auto;
+                bottom: 50px; /* 距离底部 */
+                right: -20px; /* 稍微靠右 */
+                transform: scale(0.45); /* 缩小至45% */
+            }
+        }
+
+        /* 桌面端样式：正常大小，放在右侧居中 */
+        @media (min-width: 1024px) {
+            .magic-cube-wrapper {
+                top: 50%;
+                right: 5%;
+                bottom: auto;
+                transform: translateY(-50%) scale(0.85);
+            }
+        }
+
+        .magic-cube-box {
+            position: relative;
+            transform: skewY(-20deg);
+            animation: cube-animate 8s linear infinite; /* 稍微放慢速度 */
+            pointer-events: auto; /* 恢复魔方交互 */
+        }
+
+        .magic-cube-box .cube { position: relative; z-index: 2; }
+        .magic-cube-box .cube:nth-child(2) { z-index: 1; translate: -60px -60px; }
+        .magic-cube-box .cube:nth-child(3) { z-index: 3; translate: 60px 60px; }
+
+        .magic-cube-box .cube div {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            translate: calc(-70px * var(--x)) calc(-60px * var(--y));
+        }
+
+        .magic-cube-box .cube div span {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background: #dcdcdc;
+            z-index: calc(1 * var(--i));
+            transition: 1.5s;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+
+        /* 默认发光效果增强，确保可见 */
+        .magic-cube-box .cube div span:hover {
+            transition: 0s;
+            background: #EC008C; 
+            filter: drop-shadow(0 0 30px #EC008C);
+        }
+        .magic-cube-box .cube div span:hover:before, .magic-cube-box .cube div span:hover:after {
+            transition: 0s; background: #EC008C;
+        }
+
+        .magic-cube-box .cube div span:before {
+            content: ""; position: absolute; left: -40px; width: 40px; height: 100%;
+            background: #f0f0f0; transform-origin: right; transform: skewY(45deg); transition: 1.5s;
+        }
+        .magic-cube-box .cube div span:after {
+            content: ""; position: absolute; top: -40px; left: 0px; width: 100%; height: 40px;
+            background: #e0e0e0; transform-origin: bottom; transform: skewX(45deg); transition: 1.5s;
+        }
+        
+        /* --- 3D 旋转展示卡片样式 (Rotating Cards) --- */
+        .wrapper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .inner {
+            --w: 120px;
+            --h: 180px;
+            --translateZ: calc((var(--w) + var(--h)) + 50px);
+            --rotateX: -15deg;
+            --perspective: 1000px;
+            position: absolute;
+            width: var(--w);
+            height: var(--h);
+            top: 25%;
+            left: calc(50% - (var(--w) / 2));
+            z-index: 2;
+            transform-style: preserve-3d;
+            transform: perspective(var(--perspective));
+            animation: rotating 20s linear infinite;
+        }
+        
+        @media (max-width: 768px) {
+            .inner {
+                --w: 80px;
+                --h: 120px;
+                --translateZ: calc((var(--w) + var(--h)) + 20px);
+            }
+        }
+
+        @keyframes rotating {
+            from {
+                transform: perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(0);
+            }
+            to {
+                transform: perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(1turn);
+            }
+        }
+
+        .card {
+            position: absolute;
+            border: 2px solid rgba(var(--color-card), 0.8);
+            border-radius: 12px;
+            overflow: hidden;
+            inset: 0;
+            transform: rotateY(calc((360deg / var(--quantity)) * var(--index))) translateZ(var(--translateZ));
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 15px rgba(var(--color-card), 0.3);
+        }
+
+        .img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: #0000 radial-gradient(
+                circle,
+                rgba(var(--color-card), 0.2) 0%,
+                rgba(var(--color-card), 0.6) 80%,
+                rgba(var(--color-card), 0.9) 100%
+            );
+        }
+
+        /* --- 新增：伸缩卡片展示样式 (Expandable Cards) --- */
+        /* 重命名为 expand-card 避免冲突 */
+        .expand-card {
+            width: 100%;
+            max-width: 900px; /* 限制最大宽度 */
+            height: 300px; /* 调整高度 */
+            border-radius: 4px;
+            background: #212121;
+            display: flex;
+            gap: 5px;
+            padding: .4em;
+            margin: 0 auto;
+        }
+
+        .expand-card p {
+            height: 100%;
+            flex: 1;
+            overflow: hidden;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: all .5s;
+            background: #212121;
+            border: 1px solid #EC008C; /* 使用品牌品红 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative; /* 用于图片绝对定位 */
+        }
+
+        .expand-card p:hover {
+            flex: 4;
+        }
+
+        .expand-card p span {
+            min-width: 14em;
+            padding: .5em;
+            text-align: center;
+            transform: rotate(-90deg);
+            transition: all .5s;
+            text-transform: uppercase;
+            color: #EC008C;
+            letter-spacing: .1em;
+            font-weight: bold;
+            z-index: 10;
+            background: rgba(33, 33, 33, 0.8); /* 增加背景确保文字清晰 */
+        }
+
+        .expand-card p:hover span {
+            transform: rotate(0);
+        }
+
+        .expand-card p img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+            transition: opacity 0.5s;
+        }
+
+        .expand-card p:hover img {
+            opacity: 1;
+        }
+
+        /* 强制覆盖水印 (如果是预览环境) */
+        #edgeone-watermark, #edgeone-watermark-close { display: none !important; }
     </style>
 </head>
 <body class="bg-brand-50 text-gray-800 antialiased overflow-x-hidden">
 
-    <!-- CMYK Top Bar -->
     <div class="cmyk-bar fixed top-0 z-50">
-        <div class="cmyk-c"></div>
-        <div class="cmyk-m"></div>
-        <div class="cmyk-y"></div>
-        <div class="cmyk-k"></div>
+        <div class="cmyk-c"></div><div class="cmyk-m"></div><div class="cmyk-y"></div><div class="cmyk-k"></div>
     </div>
 
     <!-- Navigation -->
-    <nav class="fixed w-full bg-white/90 backdrop-blur-md z-40 top-1 border-b border-gray-100 transition-all duration-300" id="navbar">
+    <nav class="fixed w-full bg-white/95 backdrop-blur-md z-40 top-1 border-b border-gray-100 transition-all duration-300 shadow-sm" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
-                <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer" onclick="window.scrollTo(0,0)">
-                    
-                    <!-- [替换指南] 如果您有自己的Logo图片，请删除下方的 <div class="grid..."> 代码块，
-                         并使用 <img src="images/logo.png" class="h-10 w-auto" alt="Logo"> 替换 -->
                     <div class="grid grid-cols-2 gap-0.5 w-8 h-8 transform rotate-45">
-                        <div class="bg-c_cyan rounded-sm"></div>
-                        <div class="bg-c_magenta rounded-sm"></div>
-                        <div class="bg-c_black rounded-sm"></div>
-                        <div class="bg-c_yellow rounded-sm"></div>
+                        <div class="bg-c_cyan rounded-sm"></div><div class="bg-c_magenta rounded-sm"></div>
+                        <div class="bg-c_black rounded-sm"></div><div class="bg-c_yellow rounded-sm"></div>
                     </div>
-                    
                     <div>
-                        <h1 class="font-bold text-xl tracking-wider text-gray-900 leading-none">城至印刷</h1>
+                        <h1 class="font-bold text-xl tracking-wider text-gray-900 leading-none">诚至印刷</h1>
                         <span class="text-[10px] text-gray-500 tracking-[0.2em] uppercase">Chengzhi Print</span>
                     </div>
                 </div>
-
-                <!-- Desktop Menu -->
                 <div class="hidden md:flex space-x-8 items-center">
                     <a href="#home" class="text-gray-500 hover:text-c_cyan transition-colors text-sm font-medium">首页</a>
                     <a href="#services" class="text-gray-500 hover:text-c_magenta transition-colors text-sm font-medium">主营业务</a>
                     <a href="#about" class="text-gray-500 hover:text-c_yellow hover:text-opacity-80 transition-colors text-sm font-medium">关于我们</a>
                     <a href="#portfolio" class="text-gray-500 hover:text-c_black transition-colors text-sm font-medium">案例展示</a>
-                    
-                    <!-- 新增：导航栏直接显示电话 -->
                     <div class="hidden lg:flex flex-col items-end mr-[-10px]">
                         <span class="text-[10px] text-gray-400">24小时咨询热线</span>
-                        <a href="tel:15874217990" class="text-sm font-bold text-c_magenta font-mono hover:text-gray-900 transition-colors">
-                            <i class="fas fa-phone-alt text-xs mr-1"></i>158-7421-7990
-                        </a>
+                        <a href="tel:15874217990" class="text-sm font-bold text-c_magenta font-mono hover:text-gray-900">158-7421-7990</a>
                     </div>
-
-                    <a href="#contact" class="px-5 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-sm hover:bg-c_cyan transition-colors shadow-lg shadow-gray-200">
-                        立即定制
-                    </a>
+                    <a href="#contact" class="px-5 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-sm hover:bg-c_cyan transition-colors shadow-lg">立即定制</a>
                 </div>
-
-                <!-- Mobile menu button -->
                 <div class="md:hidden flex items-center">
-                    <button id="mobile-menu-btn" class="text-gray-500 hover:text-gray-900 focus:outline-none">
-                        <i class="fas fa-bars text-2xl"></i>
-                    </button>
+                    <button id="mobile-menu-btn" class="text-gray-500 hover:text-gray-900 focus:outline-none"><i class="fas fa-bars text-2xl"></i></button>
                 </div>
             </div>
         </div>
-   
-        <!-- Mobile Menu Panel -->
         <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100">
             <div class="px-4 pt-2 pb-6 space-y-1">
-                <a href="#home" class="block px-3 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-c_cyan rounded-md">首页</a>
-                <a href="#services" class="block px-3 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-c_magenta rounded-md">主营业务</a>
-                <a href="#about" class="block px-3 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-c_yellow rounded-md">关于我们</a>
-                <a href="#portfolio" class="block px-3 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-c_black rounded-md">案例展示</a>
+                <a href="#home" class="block px-3 py-3 text-base font-medium text-gray-700">首页</a>
+                <a href="#services" class="block px-3 py-3 text-base font-medium text-gray-700">主营业务</a>
+                <a href="#about" class="block px-3 py-3 text-base font-medium text-gray-700">关于我们</a>
+                <a href="#portfolio" class="block px-3 py-3 text-base font-medium text-gray-700">案例展示</a>
                 <a href="#contact" class="block px-3 py-3 text-base font-medium text-c_cyan font-bold">立即定制</a>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section id="home" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+    <section id="home" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden min-h-[750px] flex items-center">
+        <!-- Background -->
         <div class="absolute inset-0 z-0">
-            <!-- [替换指南] 首页大背景图
-                 请替换下方的 src 链接。建议尺寸：1920x1080px。
-                 示例：src="images/banner-bg.jpg" -->
             <img src="https://images.unsplash.com/photo-1586075010999-9bc9e4c823bf?q=80&w=2070&auto=format&fit=crop" alt="Background" class="w-full h-full object-cover opacity-10">
-            
             <div class="absolute inset-0 bg-gradient-to-b from-brand-50 via-transparent to-brand-50"></div>
         </div>
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="lg:w-2/3">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+            <div class="lg:w-7/12 relative z-30"> <!-- z-30 确保文字在最上层 -->
                 <div class="inline-flex items-center space-x-2 bg-white px-3 py-1 rounded-full border border-gray-200 mb-6 shadow-sm fade-up">
                     <span class="w-2 h-2 rounded-full bg-c_magenta"></span>
                     <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">专业定制 · 吊牌 / 标签 / 不干胶</span>
                 </div>
                 
+                <!-- 恢复的文字 H1 -->
                 <h1 class="text-4xl md:text-6xl font-bold text-gray-900 leading-tight mb-6 fade-up" style="transition-delay: 100ms;">
                     不仅是标签，<br>
                     更是提升
@@ -202,10 +356,12 @@
                     的<span class="text-c_cyan">关键细节</span>。
                 </h1>
                 
+                <!-- 恢复的文字 P -->
                 <p class="text-lg text-gray-600 mb-10 max-w-xl leading-relaxed fade-up" style="transition-delay: 200ms;">
                     从电商服装吊牌到工业热敏标签，我们提供全方位定制服务。特别推出<strong>防退货巨型吊牌</strong>方案，通过增加剪标仪式感，有效降低退货率，提升品牌好感度。
                 </p>
                 
+                <!-- 恢复的按钮 -->
                 <div class="flex flex-col sm:flex-row gap-4 fade-up" style="transition-delay: 300ms;">
                     <a href="#contact" class="px-8 py-4 bg-gray-900 text-white rounded-sm font-medium hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 group">
                         免费获取样品/报价
@@ -217,7 +373,7 @@
                     </a>
                 </div>
 
-                <!-- 新增：首屏快捷联系栏 (微信/电话/QQ) -->
+                <!-- Quick Contact -->
                 <div class="mt-10 pt-8 border-t border-gray-200/60 fade-up" style="transition-delay: 400ms;">
                     <p class="text-sm text-gray-500 mb-4 font-medium">或直接联系业务经理 (点击号码)：</p>
                     <div class="flex flex-col sm:flex-row gap-6 sm:gap-10">
@@ -244,177 +400,119 @@
                         </a>
                     </div>
                 </div>
-
             </div>
-        </div>
 
-        <!-- Decorative Floating Elements -->
-        <div class="absolute top-1/4 right-0 lg:right-20 -z-10 opacity-20">
-            <i class="fas fa-tags text-9xl text-gray-300 transform -rotate-12"></i>
+            <!-- MAGIC CUBE CONTAINER (Absolute positioned) -->
+            <div class="magic-cube-wrapper fade-up visible">
+                <div class="magic-cube-box">
+                    <!-- Layer 1 -->
+                    <div class="cube">
+                        <div style="--x:-1; --y:0"><span style="--i:3;"></span><span style="--i:2;"></span><span style="--i:1;"></span></div>
+                        <div style="--x:0; --y:0"><span style="--i:3;"></span><span style="--i:2;"></span><span style="--i:1;"></span></div>
+                        <div style="--x:1; --y:0"><span style="--i:3;"></span><span style="--i:2;"></span><span style="--i:1;"></span></div>
+                    </div>
+                    <!-- Layer 2 -->
+                    <div class="cube">
+                        <div style="--x:-1; --y:0"><span style="--i:3;"></span><span style="--i:2;"></span><span style="--i:1;"></span></div>
+                        <div style="--x:0; --y:0"><span style="--i:3;"></span><span style="--i:2;"></span><span style="--i:1;"></span></div>
+                        <div style="--x:1; --y:0"><span style="--i:3;"></span><span style="--i:2;"></span><span style="--i:1;"></span></div>
+                    </div>
+                    <!-- Layer 3 -->
+                    <div class="cube">
+                        <div style="--x:-1; --y:0"><span style="--i:3;"></span><span style="--i:2;"></span><span style="--i:1;"></span></div>
+                        <div style="--x:0; --y:0"><span style="--i:3;"></span><span style="--i:2;"></span><span style="--i:1;"></span></div>
+                        <div style="--x:1; --y:0"><span style="--i:3;"></span><span style="--i:2;"></span><span style="--i:1;"></span></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
     <!-- Services Section -->
     <section id="services" class="py-20 bg-white relative">
-        <!-- Background Pattern -->
         <div class="absolute inset-0 bg-dots opacity-30 pointer-events-none"></div>
-
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center mb-16 fade-up">
                 <h2 class="text-3xl font-bold text-gray-900">核心定制业务</h2>
                 <div class="w-12 h-1 bg-c_magenta mx-auto mt-4 mb-4"></div>
                 <p class="text-gray-500">满足您多样化的标签与吊牌定制需求</p>
             </div>
-
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Service 1: Hang Tags (Focus on Giant Tags) -->
+                <!-- Service 1 -->
                 <div class="group bg-gray-50 p-8 hover:bg-white hover:shadow-2xl transition-all duration-300 border border-transparent hover:border-gray-100 relative overflow-hidden fade-up">
                     <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                         <i class="fas fa-tag text-6xl"></i>
                     </div>
-                    <div class="w-12 h-12 bg-pink-100 text-c_magenta rounded-lg flex items-center justify-center mb-6 text-xl group-hover:scale-110 transition-transform">
-                        <i class="fas fa-tag"></i>
-                    </div>
+                    <div class="w-12 h-12 bg-pink-100 text-c_magenta rounded-lg flex items-center justify-center mb-6 text-xl group-hover:scale-110 transition-transform"><i class="fas fa-tag"></i></div>
                     <h3 class="text-xl font-bold text-gray-900 mb-3">创意吊牌定制</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed mb-4">
-                        支持异形、特种纸及<span class="font-bold text-c_magenta">巨型吊牌</span>定制。独特的剪标仪式感，增加客户购买欲，有效<span class="font-bold">降低退货率</span>。
-                    </p>
-                    <ul class="text-xs text-gray-500 space-y-1">
-                        <li><i class="fas fa-check text-c_magenta mr-1"></i> 巨型防退货设计</li>
-                        <li><i class="fas fa-check text-c_magenta mr-1"></i> 烫金/击凸/UV工艺</li>
-                    </ul>
+                    <p class="text-sm text-gray-600 mb-4">支持异形、特种纸及<span class="font-bold text-c_magenta">巨型吊牌</span>。独特的剪标仪式感，有效降低退货率。</p>
                 </div>
-
-                <!-- Service 2: Adhesive Labels -->
+                <!-- Service 2 -->
                 <div class="group bg-gray-50 p-8 hover:bg-white hover:shadow-2xl transition-all duration-300 border border-transparent hover:border-gray-100 relative overflow-hidden fade-up" style="transition-delay: 100ms;">
                     <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                         <i class="fas fa-sticky-note text-6xl"></i>
                     </div>
-                    <div class="w-12 h-12 bg-blue-100 text-c_cyan rounded-lg flex items-center justify-center mb-6 text-xl group-hover:scale-110 transition-transform">
-                        <i class="fas fa-sticky-note"></i>
-                    </div>
+                    <div class="w-12 h-12 bg-blue-100 text-c_cyan rounded-lg flex items-center justify-center mb-6 text-xl group-hover:scale-110 transition-transform"><i class="fas fa-sticky-note"></i></div>
                     <h3 class="text-xl font-bold text-gray-900 mb-3">不干胶标签</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed mb-4">
-                        铜版纸、PVC、透明龙、牛皮纸等多种材质。模切精准，粘性强，适用于食品饮料、化妆品及工业设备标识。
-                    </p>
-                    <ul class="text-xs text-gray-500 space-y-1">
-                        <li><i class="fas fa-check text-c_cyan mr-1"></i> 卷装/平张可选</li>
-                        <li><i class="fas fa-check text-c_cyan mr-1"></i> 防水防油覆膜</li>
-                    </ul>
+                    <p class="text-sm text-gray-600 mb-4">铜版纸、PVC、透明龙等材质。模切精准，粘性强，适用于各类产品标识。</p>
                 </div>
-
-                <!-- Service 3: Thermal Labels -->
+                <!-- Service 3 -->
                 <div class="group bg-gray-50 p-8 hover:bg-white hover:shadow-2xl transition-all duration-300 border border-transparent hover:border-gray-100 relative overflow-hidden fade-up" style="transition-delay: 200ms;">
                     <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                         <i class="fas fa-barcode text-6xl"></i>
                     </div>
-                    <div class="w-12 h-12 bg-yellow-100 text-yellow-600 rounded-lg flex items-center justify-center mb-6 text-xl group-hover:scale-110 transition-transform">
-                        <i class="fas fa-barcode"></i>
-                    </div>
+                    <div class="w-12 h-12 bg-yellow-100 text-yellow-600 rounded-lg flex items-center justify-center mb-6 text-xl group-hover:scale-110 transition-transform"><i class="fas fa-barcode"></i></div>
                     <h3 class="text-xl font-bold text-gray-900 mb-3">热敏标签纸</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed mb-4">
-                        电商物流面单、超市价签、三防热敏纸。显色清晰，保存持久，不卡纸，不损伤打印头，支持各种规格卷装定制。
-                    </p>
-                    <ul class="text-xs text-gray-500 space-y-1">
-                        <li><i class="fas fa-check text-yellow-600 mr-1"></i> 三防品质保证</li>
-                        <li><i class="fas fa-check text-yellow-600 mr-1"></i> 适配主流打印机</li>
-                    </ul>
+                    <p class="text-sm text-gray-600 mb-4">三防热敏纸，显色清晰，保存持久。电商物流面单、超市价签首选。</p>
                 </div>
-
-                <!-- Service 4: Packaging/Other -->
+                <!-- Service 4 -->
                 <div class="group bg-gray-50 p-8 hover:bg-white hover:shadow-2xl transition-all duration-300 border border-transparent hover:border-gray-100 relative overflow-hidden fade-up" style="transition-delay: 300ms;">
                     <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                         <i class="fas fa-box-open text-6xl"></i>
                     </div>
-                    <div class="w-12 h-12 bg-gray-200 text-c_black rounded-lg flex items-center justify-center mb-6 text-xl group-hover:scale-110 transition-transform">
-                        <i class="fas fa-box"></i>
-                    </div>
+                    <div class="w-12 h-12 bg-gray-200 text-c_black rounded-lg flex items-center justify-center mb-6 text-xl group-hover:scale-110 transition-transform"><i class="fas fa-box"></i></div>
                     <h3 class="text-xl font-bold text-gray-900 mb-3">品牌包装配套</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed mb-4">
-                        除标签外，我们提供包装盒、手提袋、说明书等全套品牌物料印刷，确保品牌视觉统一，一站式购齐。
-                    </p>
-                    <ul class="text-xs text-gray-500 space-y-1">
-                        <li><i class="fas fa-check text-c_black mr-1"></i> 结构设计定制</li>
-                        <li><i class="fas fa-check text-c_black mr-1"></i> 快速打样</li>
-                    </ul>
+                    <p class="text-sm text-gray-600 mb-4">包装盒、手提袋、说明书全套印刷，确保品牌视觉统一，一站式购齐。</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Why Us Section (Minimalist features) -->
+    <!-- Why Us -->
     <section id="about" class="py-20 bg-brand-900 text-white relative overflow-hidden">
-         <!-- Abstract Lines -->
-         <svg class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
-             <path d="M0 100 L100 0 M20 100 L100 20 M0 80 L80 0" stroke="white" stroke-width="0.5" />
-         </svg>
-
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
                 <div class="fade-up">
-                    <h2 class="text-3xl font-bold mb-6">为什么选择<span class="text-c_cyan">城至印刷</span>？</h2>
-                    <p class="text-gray-400 mb-8 leading-relaxed">
-                        在长沙，我们深耕印刷行业多年。我们不仅是标签生产商，更是品牌增值顾问。我们懂得如何通过一张小小的吊牌，增加客户剪标的“仪式感”，从而有效减少退货发生。
-                    </p>
-                    
+                    <h2 class="text-3xl font-bold mb-6">为什么选择<span class="text-c_cyan">诚至印刷</span>？</h2>
+                    <p class="text-gray-400 mb-8 leading-relaxed">在长沙深耕印刷行业多年，我们不仅是生产商，更是品牌顾问。</p>
                     <div class="space-y-6">
                         <div class="flex items-start">
-                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center border border-gray-700">
-                                <i class="fas fa-ruler-combined text-c_magenta"></i>
-                            </div>
+                            <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center border border-gray-700 flex-shrink-0"><i class="fas fa-ruler-combined text-c_magenta"></i></div>
                             <div class="ml-4">
-                                <h4 class="text-lg font-medium text-white">全面定制能力</h4>
-                                <p class="text-sm text-gray-400 mt-1">支持巨型尺寸、异形模切、特殊工艺。只要您设计得出来，我们就能印得出来。</p>
+                                <h4 class="text-lg font-medium">全面定制</h4>
+                                <p class="text-sm text-gray-400 mt-1">只要您设计得出来，我们就能印得出来。</p>
                             </div>
                         </div>
                         <div class="flex items-start">
-                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center border border-gray-700">
-                                <i class="fas fa-tachometer-alt text-c_yellow"></i>
-                            </div>
+                            <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center border border-gray-700 flex-shrink-0"><i class="fas fa-tachometer-alt text-c_yellow"></i></div>
                             <div class="ml-4">
-                                <h4 class="text-lg font-medium text-white">极速出货</h4>
-                                <p class="text-sm text-gray-400 mt-1">数码模切设备加持，小批量标签立等可取，大批量订单准时交付。</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center border border-gray-700">
-                                <i class="fas fa-leaf text-green-500"></i>
-                            </div>
-                            <div class="ml-4">
-                                <h4 class="text-lg font-medium text-white">材料丰富</h4>
-                                <p class="text-sm text-gray-400 mt-1">提供FSC认证纸张、环保热敏纸及各类特殊纹理纸张，满足不同品牌调性。</p>
+                                <h4 class="text-lg font-medium">极速出货</h4>
+                                <p class="text-sm text-gray-400 mt-1">小批量立等可取，大批量准时交付。</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="relative fade-up" style="transition-delay: 200ms;">
-                    <!-- Image Frame with Crop Marks -->
-                    <div class="relative p-4 border border-gray-700 bg-gray-800/50 backdrop-blur-sm">
-                        <div class="crop-mark crop-tl border-gray-500"></div>
-                        <div class="crop-mark crop-tr border-gray-500"></div>
-                        <div class="crop-mark crop-bl border-gray-500"></div>
-                        <div class="crop-mark crop-br border-gray-500"></div>
-                        
-                        <!--  工厂实景或设备图。
-                             src="images/factory.jpg" -->
-                        <img src="1.jpg" alt="Label Printing" class="w-full h-auto grayscale hover:grayscale-0 transition-all duration-700">
-                        
-                        <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-white p-2 shadow-lg hidden md:block">
-                            <div class="w-full h-full border border-gray-200 flex items-center justify-center">
-                                <div class="text-center">
-                                    <span class="block text-2xl font-bold text-gray-900">100%</span>
-                                    <span class="block text-[10px] text-gray-500">按需定制</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="relative fade-up p-4 border border-gray-700 bg-gray-800/50 backdrop-blur-sm">
+                     <div class="crop-mark crop-tl border-gray-500"></div><div class="crop-mark crop-tr border-gray-500"></div>
+                     <div class="crop-mark crop-bl border-gray-500"></div><div class="crop-mark crop-br border-gray-500"></div>
+                     <!-- Replaced image with 1.jpg -->
+                     <img src="1.jpg" alt="Label Printing" class="w-full h-auto opacity-80 object-cover">
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Portfolio Grid -->
+    <!-- Portfolio Grid with Rotating Cards -->
     <section id="portfolio" class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-end mb-12 fade-up">
@@ -429,13 +527,36 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <!-- New 3D Rotating Cards Display -->
+            <div class="w-full h-[800px] mb-12 fade-up">
+                <div class="wrapper">
+                    <div class="inner" style="--quantity: 6;">
+                        <div class="card" style="--index: 0; --color-card: 236, 0, 140;">
+                            <img src="1.jpg" class="img" alt="Card 1">
+                        </div>
+                        <div class="card" style="--index: 1; --color-card: 0, 174, 239;">
+                            <img src="1.jpg" class="img" alt="Card 2">
+                        </div>
+                        <div class="card" style="--index: 2; --color-card: 255, 242, 0;">
+                            <img src="1.jpg" class="img" alt="Card 3">
+                        </div>
+                        <div class="card" style="--index: 3; --color-card: 236, 0, 140;">
+                            <img src="1.jpg" class="img" alt="Card 4">
+                        </div>
+                        <div class="card" style="--index: 4; --color-card: 0, 174, 239;">
+                            <img src="1.jpg" class="img" alt="Card 5">
+                        </div>
+                        <div class="card" style="--index: 5; --color-card: 255, 242, 0;">
+                            <img src="1.jpg" class="img" alt="Card 6">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Existing Grid with replaced images -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12">
                 <!-- Portfolio Item 1: Giant Tag -->
                 <div class="group relative aspect-[4/3] overflow-hidden bg-gray-100 cursor-pointer fade-up">
-                    
-                    <!-- 案例图片1：巨型吊牌
-                         请替换下方的 src 链接。建议尺寸：800x600px。
-                         示例：src="images/case-tag.jpg" -->
                     <img src="1.jpg" alt="Fashion Hang Tag" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                     
                     <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white p-4 text-center">
@@ -446,10 +567,6 @@
                 
                 <!-- Portfolio Item 2: Thermal Roll -->
                 <div class="group relative aspect-[4/3] overflow-hidden bg-gray-100 cursor-pointer fade-up" style="transition-delay: 100ms;">
-                    
-                    <!-- 案例图片2：热敏纸
-
-                         示例：src="images/case-thermal.jpg" -->
                     <img src="1.jpg" alt="Thermal Labels" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                     
                     <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white p-4 text-center">
@@ -460,9 +577,6 @@
 
                 <!-- Portfolio Item 3: Adhesive Labels -->
                 <div class="group relative aspect-[4/3] overflow-hidden bg-gray-100 cursor-pointer fade-up" style="transition-delay: 200ms;">
-                    
-                    <!-- 案例图片3：不干胶
-                         示例：src="images/case-sticker.jpg" -->
                     <img src="1.jpg" alt="Stickers" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                     
                     <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white p-4 text-center">
@@ -471,165 +585,63 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Process Section -->
-    <section class="py-16 bg-brand-50 border-t border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row justify-between items-center space-y-8 md:space-y-0 md:space-x-4">
-                <div class="flex flex-col items-center text-center fade-up group">
-                    <div class="w-16 h-16 rounded-full bg-white border-2 border-dashed border-gray-300 flex items-center justify-center mb-4 group-hover:border-c_cyan transition-colors">
-                        <span class="text-xl font-bold text-gray-400 group-hover:text-c_cyan">01</span>
-                    </div>
-                    <h4 class="font-bold text-gray-900">需求沟通</h4>
-                    <p class="text-xs text-gray-500 mt-1">确认材质/尺寸/工艺</p>
-                </div>
-                
-                <div class="hidden md:block w-12 h-0.5 bg-gray-300"></div>
-                
-                <div class="flex flex-col items-center text-center fade-up group" style="transition-delay: 100ms;">
-                    <div class="w-16 h-16 rounded-full bg-white border-2 border-dashed border-gray-300 flex items-center justify-center mb-4 group-hover:border-c_magenta transition-colors">
-                        <span class="text-xl font-bold text-gray-400 group-hover:text-c_magenta">02</span>
-                    </div>
-                    <h4 class="font-bold text-gray-900">排版打样</h4>
-                    <p class="text-xs text-gray-500 mt-1">设计文件/实物打样</p>
-                </div>
-                
-                <div class="hidden md:block w-12 h-0.5 bg-gray-300"></div>
-
-                <div class="flex flex-col items-center text-center fade-up group" style="transition-delay: 200ms;">
-                    <div class="w-16 h-16 rounded-full bg-white border-2 border-dashed border-gray-300 flex items-center justify-center mb-4 group-hover:border-c_yellow transition-colors">
-                        <span class="text-xl font-bold text-gray-400 group-hover:text-c_yellow">03</span>
-                    </div>
-                    <h4 class="font-bold text-gray-900">批量生产</h4>
-                    <p class="text-xs text-gray-500 mt-1">高效印刷与模切</p>
-                </div>
-
-                <div class="hidden md:block w-12 h-0.5 bg-gray-300"></div>
-
-                <div class="flex flex-col items-center text-center fade-up group" style="transition-delay: 300ms;">
-                    <div class="w-16 h-16 rounded-full bg-white border-2 border-dashed border-gray-300 flex items-center justify-center mb-4 group-hover:border-c_black transition-colors">
-                        <span class="text-xl font-bold text-gray-400 group-hover:text-c_black">04</span>
-                    </div>
-                    <h4 class="font-bold text-gray-900">质检发货</h4>
-                    <p class="text-xs text-gray-500 mt-1">卷装/张装打包配送</p>
+            <!-- New: Expandable Cards Display (Added Below Grid) -->
+            <div class="fade-up" style="transition-delay: 300ms;">
+                <div class="expand-card">
+                    <p>
+                        <img src="1.jpg" alt="Image">
+                        <span>精工吊牌</span>
+                    </p>
+                    <p>
+                        <img src="1.jpg" alt="Image">
+                        <span>热敏标签</span>
+                    </p>
+                    <p>
+                        <img src="1.jpg" alt="Image">
+                        <span>特种纸张</span>
+                    </p>
+                    <p>
+                        <img src="1.jpg" alt="Image">
+                        <span>品牌包装</span>
+                    </p>
                 </div>
             </div>
+
         </div>
     </section>
 
     <!-- Contact Section -->
     <section id="contact" class="py-20 bg-white relative">
-         <div class="absolute top-0 right-0 p-10 opacity-10">
-            <!-- Printing Registration Mark -->
-            <svg width="100" height="100" viewBox="0 0 100 100" class="text-gray-900 fill-current">
-                <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="2"/>
-                <line x1="50" y1="0" x2="50" y2="100" stroke="currentColor" stroke-width="2"/>
-                <line x1="0" y1="50" x2="100" y2="50" stroke="currentColor" stroke-width="2"/>
-            </svg>
-        </div>
-
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-brand-900 rounded-lg shadow-2xl overflow-hidden flex flex-col md:flex-row fade-up">
-                
-                <!-- Contact Info -->
-                <div class="md:w-5/12 p-10 bg-gray-900 text-white flex flex-col justify-between relative overflow-hidden">
-                    <div class="absolute inset-0 bg-c_cyan opacity-5 z-0"></div>
+                <div class="md:w-5/12 p-10 bg-gray-900 text-white relative">
                     <div class="relative z-10">
                         <h3 class="text-2xl font-bold mb-8">联系我们</h3>
                         <div class="space-y-6">
-                            <div class="flex items-start">
-                                <i class="fas fa-map-marker-alt mt-1.5 w-6 text-c_cyan"></i>
-                                <div>
-                                    <p class="font-medium">公司地址</p>
-                                    <p class="text-gray-400 text-sm mt-1">湖南省长沙市天心区/雨花区XX工业园<br>城至印刷产业基地</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start">
-                                <i class="fas fa-phone-alt mt-1.5 w-6 text-c_magenta"></i>
-                                <div>
-                                    <p class="font-medium">业务咨询</p>
-                                    <p class="text-gray-400 text-sm mt-1">15874217990 (杨经理)</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start">
-                                <i class="fas fa-envelope mt-1.5 w-6 text-c_yellow"></i>
-                                <div>
-                                    <p class="font-medium">电子邮箱</p>
-                                    <p class="text-gray-400 text-sm mt-1">1046012080@qq.com</p>
-                                </div>
-                            </div>
+                            <div class="flex items-start"><i class="fas fa-map-marker-alt mt-1.5 w-6 text-c_cyan"></i><div><p class="font-medium">公司地址</p><p class="text-gray-400 text-sm">湖南省长沙市天心区/雨花区XX工业园</p></div></div>
+                            <div class="flex items-start"><i class="fas fa-phone-alt mt-1.5 w-6 text-c_magenta"></i><div><p class="font-medium">业务咨询</p><p class="text-gray-400 text-sm">15874217990 (杨经理)</p></div></div>
+                            <div class="flex items-start"><i class="fas fa-envelope mt-1.5 w-6 text-c_yellow"></i><div><p class="font-medium">电子邮箱</p><p class="text-gray-400 text-sm">1046012080@qq.com</p></div></div>
                         </div>
-                    </div>
-                    
-                    <div class="relative z-10 mt-12">
-                        <div class="flex gap-4">
-                            <!-- QQ Link (opens QQ chat) -->
-                            <a href="tencent://message/?uin=1046012080&Site=&Menu=yes" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-c_cyan transition-colors" title="点击联系QQ">
-                                <i class="fab fa-qq"></i>
-                            </a>
-                            <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-c_magenta transition-colors" title="微信咨询">
-                                <i class="fab fa-weixin"></i>
-                            </a>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-2">QQ: 1046012080</p>
                     </div>
                 </div>
-
-                <!-- Contact Form -->
                 <div class="md:w-7/12 p-10 bg-white">
                     <h3 class="text-2xl font-bold text-gray-900 mb-2">在线询价</h3>
-                    <p class="text-gray-500 mb-8 text-sm">填写您的定制需求，发送邮件后我们将在30分钟内回复报价。</p>
-                    
+                    <p class="text-gray-500 mb-8 text-sm">填写需求，我们将快速回复报价。</p>
                     <form id="contactForm" class="space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">您的姓名</label>
-                                <input type="text" id="name" class="w-full px-4 py-2 border border-gray-300 rounded-sm focus:ring-1 focus:ring-c_black focus:border-c_black outline-none transition-colors" placeholder="怎么称呼您" required>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">联系电话</label>
-                                <input type="tel" id="phone" class="w-full px-4 py-2 border border-gray-300 rounded-sm focus:ring-1 focus:ring-c_black focus:border-c_black outline-none transition-colors" placeholder="手机号码" required>
-                            </div>
+                            <div><label class="block text-sm font-medium mb-1">您的姓名</label><input type="text" id="name" class="w-full px-4 py-2 border rounded-sm" placeholder="怎么称呼您" required></div>
+                            <div><label class="block text-sm font-medium mb-1">联系电话</label><input type="tel" id="phone" class="w-full px-4 py-2 border rounded-sm" placeholder="手机号码" required></div>
                         </div>
-                        
-                        <!-- Product Selection Row -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">定制类型</label>
-                                <select id="productType" class="w-full px-4 py-2 border border-gray-300 rounded-sm focus:ring-1 focus:ring-c_black focus:border-c_black outline-none transition-colors bg-white">
-                                    <option value="">请选择类型...</option>
-                                    <option value="吊牌定制">吊牌定制 (普通/巨型)</option>
-                                    <option value="不干胶标签">不干胶标签</option>
-                                    <option value="热敏标签纸">热敏标签纸</option>
-                                    <option value="包装礼盒">包装礼盒</option>
-                                    <option value="广告物料">广告物料</option>
-                                    <option value="其他定制">其他定制</option>
-                                </select>
-                            </div>
-                            
-                            <!-- Quantity Input -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">定制数量</label>
-                                <input type="text" id="quantity" class="w-full px-4 py-2 border border-gray-300 rounded-sm focus:ring-1 focus:ring-c_black focus:border-c_black outline-none transition-colors" placeholder="例如：5000张">
+                                <label class="block text-sm font-medium mb-1">定制类型</label>
+                                <select id="productType" class="w-full px-4 py-2 border rounded-sm bg-white"><option value="">请选择类型...</option><option value="吊牌定制">吊牌定制</option><option value="不干胶标签">不干胶标签</option><option value="热敏纸">热敏纸</option></select>
                             </div>
+                            <div><label class="block text-sm font-medium mb-1">数量</label><input type="text" id="quantity" class="w-full px-4 py-2 border rounded-sm" placeholder="例如：5000张"></div>
                         </div>
-                        
-                        <!-- Size Input Row -->
-                        <div>
-                             <label class="block text-sm font-medium text-gray-700 mb-1">规格尺寸</label>
-                             <input type="text" id="size" class="w-full px-4 py-2 border border-gray-300 rounded-sm focus:ring-1 focus:ring-c_black focus:border-c_black outline-none transition-colors" placeholder="长 x 宽 (mm)">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">需求描述预览 (自动生成)</label>
-                            <textarea id="message" rows="5" class="w-full px-4 py-2 border border-gray-300 rounded-sm focus:ring-1 focus:ring-c_black focus:border-c_black outline-none transition-colors" placeholder="选择上方选项后，此处将自动生成需求模版..."></textarea>
-                        </div>
-
-                        <button type="submit" class="w-full bg-c_black text-white font-medium py-3 rounded-sm hover:bg-gray-800 transition-colors shadow-lg flex justify-center items-center gap-2">
-                            <i class="fas fa-paper-plane"></i> 发送需求邮件
-                        </button>
+                        <div><label class="block text-sm font-medium mb-1">需求描述</label><textarea id="message" rows="5" class="w-full px-4 py-2 border rounded-sm" placeholder="请填写具体材质、工艺等..."></textarea></div>
+                        <button type="submit" class="w-full bg-c_black text-white font-medium py-3 rounded-sm hover:bg-gray-800 transition shadow-lg flex justify-center items-center gap-2"><i class="fas fa-paper-plane"></i> 发送询价</button>
                     </form>
                 </div>
             </div>
@@ -638,160 +650,55 @@
 
     <!-- Footer -->
     <footer class="bg-white border-t border-gray-200 pt-16 pb-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-                <div class="col-span-1 md:col-span-1">
-                    <div class="flex items-center gap-2 mb-4">
-                        <div class="grid grid-cols-2 gap-0.5 w-6 h-6">
-                            <div class="bg-c_cyan"></div>
-                            <div class="bg-c_magenta"></div>
-                            <div class="bg-c_black"></div>
-                            <div class="bg-c_yellow"></div>
-                        </div>
-                        <span class="font-bold text-lg">城至印刷</span>
-                    </div>
-                    <p class="text-gray-500 text-sm leading-relaxed">
-                        专注吊牌、标签与不干胶定制，致力于为企业提供高品质、能带货的印刷解决方案。
-                    </p>
-                </div>
-                
-                <div>
-                    <h4 class="font-bold text-gray-900 mb-4">产品导航</h4>
-                    <ul class="space-y-2 text-sm text-gray-500">
-                        <li><a href="#" class="hover:text-c_cyan transition-colors">巨型创意吊牌</a></li>
-                        <li><a href="#" class="hover:text-c_magenta transition-colors">卷装不干胶</a></li>
-                        <li><a href="#" class="hover:text-c_yellow hover:text-opacity-80 transition-colors">热敏标签纸</a></li>
-                        <li><a href="#" class="hover:text-c_black transition-colors">品牌包装</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-gray-900 mb-4">快速链接</h4>
-                    <ul class="space-y-2 text-sm text-gray-500">
-                        <li><a href="#about" class="hover:text-gray-900">关于我们</a></li>
-                        <li><a href="#portfolio" class="hover:text-gray-900">成功案例</a></li>
-                        <li><a href="#" class="hover:text-gray-900">印刷知识</a></li>
-                        <li><a href="#contact" class="hover:text-gray-900">联系方式</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-gray-900 mb-4">工作时间</h4>
-                    <ul class="space-y-2 text-sm text-gray-500">
-                        <li>周一至周六: 8:30 - 18:00</li>
-                        <li>周日: 休息 (急单可联系)</li>
-                        <li class="pt-2 text-xs text-gray-400">24小时在线接单</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
-                <p>&copy; 2023 长沙城至印刷有限公司 版权所有.</p>
-                <div class="flex space-x-4 mt-4 md:mt-0">
-                    <a href="#" class="hover:text-gray-600">隐私政策</a>
-                    <a href="#" class="hover:text-gray-600">服务条款</a>
-                </div>
-            </div>
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-gray-500 text-sm">&copy; 2026 长沙诚至印刷有限公司 版权所有.</p>
         </div>
-        
-        <!-- Bottom CMYK Stripe -->
         <div class="h-1 w-full mt-8 bg-gradient-to-r from-c_cyan via-c_magenta to-c_yellow"></div>
     </footer>
 
     <!-- Scripts -->
     <script>
-        // Mobile Menu Toggle
+        // 1. Mobile Menu
         const btn = document.getElementById('mobile-menu-btn');
         const menu = document.getElementById('mobile-menu');
+        btn.addEventListener('click', () => menu.classList.toggle('hidden'));
 
-        btn.addEventListener('click', () => {
-            menu.classList.toggle('hidden');
-        });
-
-        // Close mobile menu when clicking a link
-        document.querySelectorAll('#mobile-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                menu.classList.add('hidden');
-            });
-        });
-
-        // Navbar Scroll Effect
+        // 2. Navbar Scroll
         window.addEventListener('scroll', () => {
             const navbar = document.getElementById('navbar');
-            if (window.scrollY > 20) {
-                navbar.classList.add('shadow-md');
-                navbar.classList.replace('bg-white/90', 'bg-white/95');
-            } else {
-                navbar.classList.remove('shadow-md');
-                navbar.classList.replace('bg-white/95', 'bg-white/90');
-            }
+            navbar.classList.toggle('shadow-md', window.scrollY > 20);
         });
 
-        // Fade Up Animation on Scroll
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.1
-        };
-
-        const observer = new IntersectionObserver((entries, observer) => {
+        // 3. Fade Up Observer
+        const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
-                }
+                if(entry.isIntersecting) entry.target.classList.add('visible');
             });
-        }, observerOptions);
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-        document.querySelectorAll('.fade-up').forEach(el => {
-            observer.observe(el);
-        });
-
-        // --- NEW: Form Logic ---
-        
-        // 1. Auto-fill Requirement Description based on inputs
+        // 4. Contact Form Logic
         const productType = document.getElementById('productType');
         const quantity = document.getElementById('quantity');
-        const size = document.getElementById('size');
         const message = document.getElementById('message');
-
+        
         function updateMessage() {
-            const typeVal = productType.value || '[待选择]';
-            const sizeVal = size.value || '[待填写]';
-            const qtyVal = quantity.value || '[待填写]';
-            
-            // Only auto-fill if specific inputs are touched, or generate template for "Other"
-            let text = `需求类型：${typeVal}\n`;
-            text += `规格尺寸：${sizeVal}\n`;
-            text += `定制数量：${qtyVal}\n`;
-            text += `其他备注：请在此补充具体材质、工艺或其他要求...`;
-            
-            message.value = text;
+            if(!message.value.startsWith('需求类型')) {
+                 const typeVal = productType.value || '[待选择]';
+                 const qtyVal = quantity.value || '[待填写]';
+                 message.placeholder = `需求类型：${typeVal}\n定制数量：${qtyVal}\n其他备注：...`;
+            }
         }
+        [productType, quantity].forEach(input => input.addEventListener('change', updateMessage));
 
-        [productType, quantity, size].forEach(input => {
-            input.addEventListener('input', updateMessage);
-            input.addEventListener('change', updateMessage);
-        });
-
-        // 2. Mailto Send Logic
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
             const name = document.getElementById('name').value;
             const phone = document.getElementById('phone').value;
             const msg = document.getElementById('message').value;
-            
-            const subject = encodeURIComponent(`【印刷询价】${name} - ${phone}`);
-            const body = encodeURIComponent(`联系人：${name}\n联系电话：${phone}\n\n${msg}`);
-            
-            // Use mailto to open default mail client
-            window.location.href = `mailto:1046012080@qq.com?subject=${subject}&body=${body}`;
-            
-            // Optional: Alert user
-            alert('已为您调起邮件客户端，请点击发送即可。');
+            window.location.href = `mailto:1046012080@qq.com?subject=询价-${name}&body=联系人：${name}%0A电话：${phone}%0A需求：${msg}`;
+            alert('已调用邮件客户端');
         });
-
     </script>
 </body>
 </html>
